@@ -2,6 +2,7 @@
 // A: kasus contoh dihitung engine & dirender layar Hasil web asli; klik kalimat → dialog sunting yang sama dengan Teks
 // aplikasi (alur draf/ajuan/review tidak berubah). B: daftar semua kalimat per tahap untuk yang tidak muncul di kasus
 // contoh. Kunci diksi tidak tampil; sisipan tampil sebagai label manusiawi (editor/penjelasanHasil).
+import { bisaMenulis } from '@waris/content';
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import type { RingkasanEntri, RingkasanKunciDiksi } from '@waris/data';
 import { pasangSnapshot, snapshotTerpasang } from '@waris/web/sumber';
@@ -29,7 +30,7 @@ const KASUS_CONTOH = [
   { id: 'aul', label: 'Suami, ibu, dan saudari kandung (bagian melebihi harta)', kasus: buatKasus('P', ['SUAMI', 'IBU', 'SAUDARI_KANDUNG']) },
   { id: 'radd', label: 'Ibu dan anak perempuan (ada sisa dikembalikan)', kasus: buatKasus('L', ['IBU', 'ANAK_PR']) },
 ] as const;
-const LABEL_STATUS: Record<StatusTeks, string> = { terbit: 'Terbit', draf: 'Draf', diajukan: 'Menunggu review', dikembalikan: 'Dikembalikan' };
+const LABEL_STATUS: Record<StatusTeks, string> = { terbit: 'Terbit', draf: 'Draf', diajukan: 'Menunggu review', diperiksa: 'Menunggu keilmuan', dikembalikan: 'Dikembalikan' };
 
 export function PenjelasanHasil() {
   const { repo, peran } = usePortal();
@@ -109,7 +110,7 @@ export function PenjelasanHasil() {
         )) : <Skeleton className="h-24" />}
       </section>
       {dipilih && data ? (
-        <DialogSunting pilihan={dipilih} data={data} bacaSaja={peran === 'reviewer'} layarSekarang={NAMA_LAYAR}
+        <DialogSunting pilihan={dipilih} data={data} bacaSaja={!bisaMenulis(peran)} layarSekarang={NAMA_LAYAR}
           saatTutup={() => setDipilih(null)} saatTersimpan={() => setMuatUlang(n => n + 1)} />
       ) : null}
     </div>

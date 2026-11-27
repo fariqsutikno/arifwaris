@@ -7,7 +7,7 @@ import { join, relative, resolve } from 'node:path';
 import { kodeSoalGanda, nomorBagian, periksaMateri, type Pelajaran, type Temuan } from '@waris/content';
 import { periksaAngkaMateri } from '@waris/latihan';
 
-const AKAR = resolve(import.meta.dirname, '..');
+export const AKAR = resolve(import.meta.dirname, '..');
 const FOLDER_KONTEN = join(AKAR, 'konten/materi');
 const KERANGKA = join(AKAR, 'docs/materi-kit/kerangka-kurikulum.md');
 
@@ -60,7 +60,7 @@ export function cetakLaporan(laporan: LaporanBerkas[]): void {
   }
 }
 
-function daftarMarkdown(jalur: string): string[] {
+export function daftarMarkdown(jalur: string): string[] {
   let info;
   try { info = statSync(jalur); } catch { return []; }
   if (info.isFile()) return jalur.endsWith('.md') ? [jalur] : [];
@@ -68,6 +68,6 @@ function daftarMarkdown(jalur: string): string[] {
 }
 
 /** Kolom pertama tabel kerangka: "| 5-1-hajb (ada) | ..." → 5-1-hajb. */
-function slugKerangka(): string[] {
+export function slugKerangka(): string[] {
   return [...readFileSync(KERANGKA, 'utf8').matchAll(/^\| (\d+-\d+-[a-z0-9-]+)/gm)].map(cocok => cocok[1]!);
 }

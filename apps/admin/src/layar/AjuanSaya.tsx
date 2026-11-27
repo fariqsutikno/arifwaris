@@ -3,7 +3,7 @@
 // Konten dibuka di editornya; teks aplikasi disunting di tempat lewat dialog yang sama dengan menu Teks aplikasi.
 import { ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { bolehAbaikanRevisi } from '@waris/content';
+import { bolehAbaikanRevisi, bisaMenulis } from '@waris/content';
 import type { RingkasanEntri, RingkasanKunciDiksi } from '@waris/data';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -120,7 +120,7 @@ export function AjuanSaya() {
         ))}
       </Tabs>
       {teksDipilih && dataTeks ? (
-        <DialogSunting pilihan={[teksDipilih]} data={dataTeks} bacaSaja={peran === 'reviewer'}
+        <DialogSunting pilihan={[teksDipilih]} data={dataTeks} bacaSaja={!bisaMenulis(peran)}
           saatTutup={() => setTeksDipilih(null)} saatTersimpan={() => { setDataTeks(null); setMuatUlang(n => n + 1); }} />
       ) : null}
     </div>

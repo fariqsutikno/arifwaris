@@ -3,7 +3,7 @@
 // (beserta alasannya dalam bahasa manusia), atau ada di Sampah; serta teks "tayang di web". EditorEntri hanya
 // menampilkan hasilnya. Pengguna tidak pernah melihat istilah "draf baru": suntingan pertama membuat salinan kerja,
 // suntingan berikutnya memperbaruinya.
-import { bolehPerbaruiAjuan, bolehPulihkanEntri, bolehSuntingDraf, caraBuangEntri, transisiRevisi, type KeadaanSampah, type Peran } from '@waris/content';
+import { bolehPerbaruiAjuan, bolehPulihkanEntri, bolehSuntingDraf, caraBuangEntri, transisiRevisi, type KeadaanSampah, type Peran, bisaMenulis } from '@waris/content';
 import type { RingkasanRevisi } from '@waris/data';
 
 export interface EntriSunting {
@@ -25,17 +25,17 @@ export function keadaanSunting(entri: EntriSunting, pelaku: Pelaku): KeadaanSunt
     return { jenis: 'sampah', bolehPulihkan: boleh.ok, alasan: boleh.ok ? null : boleh.galat };
   }
   const terakhir = revisiTerakhir(entri.semuaRevisi);
-  if (terakhir?.status === 'diajukan') {
+  if (terakhir?.status === 'diajukan' || terakhir?.status === 'diperiksa') {
     // [K2] pembuat menyunting ajuannya langsung (tetap di antrean). Admin yang memeriksa ajuan orang lain tetap melihat
     // kartu review, bukan form.
     if (!terakhir.hapus && terakhir.dibuatOleh === pelaku.userId
-        && bolehPerbaruiAjuan({ peran: pelaku.peran, pelakuId: pelaku.userId, pembuatId: terakhir.dibuatOleh, status: 'diajukan' })) {
+        && bolehPerbaruiAjuan({ peran: pelaku.peran, pelakuId: pelaku.userId, pembuatId: terakhir.dibuatOleh, status: terakhir.status })) {
       return { jenis: 'sunting', salinanKerjaId: terakhir.id, ajuan: true };
     }
-    const bolehTarik = transisiRevisi({ peran: pelaku.peran, pelakuId: pelaku.userId, pembuatId: terakhir.dibuatOleh, status: 'diajukan', aksi: 'tarik' }).ok;
+    const bolehTarik = transisiRevisi({ peran: pelaku.peran, pelakuId: pelaku.userId, pembuatId: terakhir.dibuatOleh, status: terakhir.status, aksi: 'tarik' }).ok;
     return { jenis: 'menungguReview', revisi: terakhir, bolehTarik };
   }
-  if (pelaku.peran === 'reviewer') return { jenis: 'terkunci', alasan: 'Reviewer hanya membaca; periksa perubahan lewat Antrean review.' };
+  if (!bisaMenulis(pelaku.peran)) return { jenis: 'terkunci', alasan: `${pelaku.peran === 'reviewer' ? 'Reviewer' : 'Keilmuan'} hanya membaca; periksa perubahan lewat Antrean review.` };
   if (terakhir?.status === 'draf') {
     const milikSaya = bolehSuntingDraf({ peran: pelaku.peran, pelakuId: pelaku.userId, pembuatId: terakhir.dibuatOleh, status: 'draf' });
     return milikSaya

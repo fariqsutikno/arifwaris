@@ -239,7 +239,7 @@ function hitungDunia(input: InputEngine, opsi: OpsiTaqdir, taqdir: Taqdir): Hasi
     const hasil = opsi.hitungDuniaPasti(inputDunia);
     if ('status' in hasil) return hasil;
     ({ saham, daftarHasil } = hasil);
-  } else if (opsi.urutanWafat) {
+  } else if (opsi.urutanWafat?.length) { // daftar kosong = tanpa munasakhat: jalur pipeline biasa (satu-satunya yang menyusun `bagian`)
     const hasil = hitungMunasakhat({ dasar: inputDunia, urutanWafat: opsi.urutanWafat, ...(opsi.dikandungSetelahWafat ? { dikandungSetelahWafat: opsi.dikandungSetelahWafat } : {}) });
     if (hasil.status !== 'OK') return hasil;
     daftarHasil = hasil.daftarLangkah.map(langkah => ({ mayit: langkah.mayit, hasil: langkah.hasil }));

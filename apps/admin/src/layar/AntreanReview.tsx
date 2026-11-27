@@ -3,6 +3,7 @@
 // belum ada → semua isi tambah; pengajuan ke Sampah → cukup keterangan). Tombol Setujui/Kembalikan lewat AksiReview (hanya bila
 // transisiRevisi mengizinkan); revisi milik sendiri berlabel "revisi Anda". Tiap butir berjudul jenis + judul entri, menyebut pembuat &
 // waktu, dan menaut ke editor entrinya; terlama di atas. Galat repo ditampilkan (lewat pesanGalat) di butirnya.
+// Soal kuis (dua tahap, bisa ribuan) dipisah ke AntreanSoalKuis; peran keilmuan hanya melihat soal kuis berstatus diperiksa.
 import { useEffect, useState } from 'react';
 import { bacaIsi, type JenisKonten, type StatusRevisi } from '@waris/content';
 import type { DiksiTerbit, RingkasanEntri } from '@waris/data';
@@ -19,6 +20,8 @@ import { usePortal } from '../repo';
 import { judulEntri, waktuRelatif } from '../ringkas';
 import { tulisRute } from '../rute';
 import { AksiReview } from './AksiReview';
+import { AntreanSoalKuis } from './AntreanSoalKuis';
+import type { ButirKuis } from '../editor/soalKuisReview';
 import { Pratinjau } from './Pratinjau';
 import { Perbandingan } from './Perbandingan';
 
@@ -40,20 +43,23 @@ interface Butir {
 }
 
 export function AntreanReview() {
-  const { repo } = usePortal();
+  const { repo, peran } = usePortal();
   const [daftar, setDaftar] = useState<Butir[] | null>(null);
+  const [daftarKuis, setDaftarKuis] = useState<ButirKuis[]>([]);
   const [galat, setGalat] = useState<string | null>(null);
   const [muatUlang, setMuatUlang] = useState(0);
 
   useEffect(() => {
     let dibatalkan = false;
     (async () => {
-      const [revisiKonten, revisiDiksi, kunciDiksi, entri] = await Promise.all([
-        repo.editorial.antreanReview(),
-        repo.diksi.antreanReview(),
-        repo.diksi.daftarKunci(),
-        repo.konten.daftarEntri(),
-      ]);
+      const [antreanKonten, antreanDiksi] = await Promise.all([repo.editorial.antreanReview(), repo.diksi.antreanReview()]);
+      const adalahKuis = (revisi: { jenis: string; hapus: boolean }) => revisi.jenis === 'soal_kuis' && !revisi.hapus;
+      const kuis = antreanKonten.filter(adalahKuis)
+        .filter(revisi => peran !== 'keilmuan' || revisi.status === 'diperiksa');
+      const revisiKonten = peran === 'keilmuan' ? [] : antreanKonten.filter(revisi => !adalahKuis(revisi));
+      const revisiDiksi = peran === 'keilmuan' ? [] : antreanDiksi;
+      // Entri & kunci hanya dimuat bila ada butir umum; antrean soal kuis tidak membutuhkannya.
+      const [kunciDiksi, entri] = revisiKonten.length + revisiDiksi.length === 0 ? [[], []] as const : await Promise.all([repo.diksi.daftarKunci(), repo.konten.daftarEntri()]);
       const butirKonten = await Promise.all(revisiKonten.map(async (revisi): Promise<Butir> => {
         const e = entri.find(x => x.entriId === revisi.entriId);
         if (!e) throw new Error(`entri ${revisi.entriId} tidak ditemukan`);
@@ -79,7 +85,9 @@ export function AntreanReview() {
           kembalikan: catatan => repo.diksi.kembalikan(revisi.id, catatan),
         };
       });
-      if (!dibatalkan) setDaftar([...butirKonten, ...butirDiksi].sort((a, b) => a.dibuatPada.localeCompare(b.dibuatPada)));
+      if (dibatalkan) return;
+      setDaftarKuis(kuis.map(({ id, entriId, status, dibuatOleh, dibuatPada, refs, isi }) => ({ id, entriId, status, dibuatOleh, dibuatPada, refs, isi })));
+      setDaftar([...butirKonten, ...butirDiksi].sort((a, b) => a.dibuatPada.localeCompare(b.dibuatPada)));
     })().catch(e => { if (!dibatalkan) setGalat(pesanGalat(e)); });
     return () => { dibatalkan = true; };
 
@@ -87,17 +95,19 @@ export function AntreanReview() {
       const revisi = await repo.konten.daftarRevisi(e.entriId);
       return revisi.find(r => r.id === e.revisiTerbitId) ?? revisi.filter(r => r.status === 'disetujui').at(-1) ?? null;
     }
-  }, [repo, muatUlang]);
+  }, [repo, peran, muatUlang]);
 
   return (
     <div className="space-y-4">
       <div>
         <h1 className="text-2xl font-bold">Antrean review</h1>
-        {daftar?.length ? <p className="text-sm text-muted-foreground">{daftar.length} revisi menunggu diperiksa, terlama di atas.</p> : null}
+        {daftar && daftar.length + daftarKuis.length > 0
+          ? <p className="text-sm text-muted-foreground">{daftar.length + daftarKuis.length} revisi menunggu diperiksa{daftar.length > 0 ? ', terlama di atas' : ''}.</p> : null}
       </div>
       {galat ? <Alert variant="destructive" role="alert"><AlertDescription>{galat}</AlertDescription></Alert> : null}
       {!daftar && !galat ? <Skeleton className="h-48" /> : null}
-      {daftar?.length === 0 ? <p className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">Antrean review kosong.</p> : null}
+      {daftar && daftar.length + daftarKuis.length === 0 ? <p className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">Antrean review kosong.</p> : null}
+      {daftarKuis.length > 0 ? <AntreanSoalKuis daftar={daftarKuis} muatUlang={() => setMuatUlang(n => n + 1)} /> : null}
       {daftar?.map(butir => <ButirReview key={butir.id} butir={butir} saatSelesai={() => setMuatUlang(n => n + 1)} />)}
     </div>
   );

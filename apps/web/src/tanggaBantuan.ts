@@ -46,6 +46,8 @@ export type PenandaXp = { jenis: 'bonus'; dasar: number; bonus: number } | { jen
 
 /** Penanda di kepala tabel; null bila XP sudah didapat sebelumnya (tidak ada yang dipertaruhkan). */
 export function penandaXp(bobotXp: number, keadaan: { xpMasihAda: boolean; xpHangus: boolean; petunjuk: boolean; salah: number }): PenandaXp | null {
+  // Bobot 0 = soal tanpa XP (soal bank, sampai XP-nya tercatat di server): tidak ada penanda sama sekali.
+  if (bobotXp <= 0) return null;
   if (keadaan.xpHangus) return { jenis: 'hangus' };
   if (!keadaan.xpMasihAda) return null;
   const { dasar, bonus } = pecahXp(bobotXp);

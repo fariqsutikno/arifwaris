@@ -16,11 +16,12 @@ import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-const DAFTAR_PERAN: Peran[] = ['admin', 'penulis', 'reviewer'];
-const LABEL_PERAN: Record<Peran, string> = { admin: 'Admin', penulis: 'Penulis', reviewer: 'Reviewer' };
+const DAFTAR_PERAN: Peran[] = ['admin', 'penulis', 'reviewer', 'keilmuan'];
+const LABEL_PERAN: Record<Peran, string> = { admin: 'Admin', penulis: 'Penulis', reviewer: 'Reviewer', keilmuan: 'Keilmuan' };
 const KETERANGAN_PERAN: Record<Peran, string> = {
   penulis: 'menulis & mengajukan draf',
   reviewer: 'memeriksa & menerbitkan revisi orang lain',
+  keilmuan: 'menyetujui soal kuis yang sudah diperiksa',
   admin: 'semua, termasuk mengatur peran',
 };
 const ALASAN_DIRI_SENDIRI = 'Peran Anda sendiri tidak bisa diubah dari sini.';

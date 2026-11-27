@@ -4,7 +4,7 @@
 //   - PanelSaranAi: daftar saran kelengkapan materi/FAQ; hanya saran, tidak pernah menulis ke isi.
 // Reviewer tidak mendapat tautan AI (hanya penulis & admin, keputusan C7).
 import { useContext, useState } from 'react';
-import { JUDUL_BAB, RUJUKAN } from '@waris/content';
+import { JUDUL_BAB, RUJUKAN, bisaMenulis } from '@waris/content';
 import type { DrafKuisAi, PermintaanAi, HasilAi } from '@waris/data';
 import { Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -20,7 +20,7 @@ import { Perbandingan } from './Perbandingan';
 /** Fungsi pemanggil AI bila pengguna boleh memakainya (penulis/admin di dalam portal), selain itu null. */
 function useAi() {
   const portal = useContext(KonteksRepo);
-  if (!portal || portal.peran === 'reviewer') return null;
+  if (!portal || !bisaMenulis(portal.peran)) return null;
   return async <F extends HasilAi['fitur']>(permintaan: PermintaanAi & { fitur: F }) =>
     (await portal.repo.ai.bantu(permintaan)).hasil as Extract<HasilAi, { fitur: F }>;
 }

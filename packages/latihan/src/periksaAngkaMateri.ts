@@ -1,6 +1,6 @@
 // Bagian pemeriksa materi yang butuh engine: blok kasus (harapan = hasil engine), peraga ('aul hanya bila engine
 // benar-benar 'aul), dan simulasi (kunci ahli waris sah). Sisi tanpa engine ada di periksaMateri (@waris/content).
-import type { Blok, Temuan } from '@waris/content';
+import type { Blok, ContohKasus, Temuan } from '@waris/content';
 import { jalankan } from './jalankan.js';
 import { kasusDariSoal } from './soal.js';
 
@@ -50,16 +50,22 @@ type Lapor = (baris: number, pesan: string) => void;
 
 function periksaKasus(blok: Extract<Blok, { jenis: 'kasus' }>, baris: number, galat: Lapor) {
   const { pewaris, ahliWaris, harta, harapan } = blok.kasus;
+  const selisih = selisihHarapan(pewaris, ahliWaris, harapan, harta);
+  if (selisih) galat(baris, selisih);
+  for (const kunci of Object.keys(blok.keterangan ?? {})) {
+    if (!ahliWaris.includes(kunci)) galat(baris, `keterangan ${kunci} untuk ahli waris yang tidak ada di kasus`);
+  }
+}
+
+/** Pesan galat bila harapan tidak sama dengan engine (atau kasus tak bisa dihitung); null bila cocok. Dipakai blok kasus materi dan paket soal. */
+export function selisihHarapan(pewaris: 'L' | 'P', ahliWaris: string[], harapan: ContohKasus['harapan'], harta: bigint = HARTA_PERAGA): string | null {
   const hasil = hitungContoh(pewaris, ahliWaris, harta);
-  if (!hasil.ok) { galat(baris, `kasus tidak bisa dihitung: ${hasil.pesan}`); return; }
+  if (!hasil.ok) return `kasus tidak bisa dihitung: ${hasil.pesan}`;
   const tulis = (saham: Record<string, bigint>, ashl: bigint) =>
     `${Object.entries(saham).map(([kunci, nilai]) => `${kunci} ${nilai}`).join(', ')}; ashl ${ashl}`;
   const sama = hasil.ashlAkhir === harapan.ashlAkhir && Object.keys(hasil.saham).length === Object.keys(harapan.saham).length
     && Object.entries(hasil.saham).every(([kunci, nilai]) => harapan.saham[kunci] === nilai);
-  if (!sama) galat(baris, `harapan tidak sama dengan engine. Engine: "${tulis(hasil.saham, hasil.ashlAkhir)}"`);
-  for (const kunci of Object.keys(blok.keterangan ?? {})) {
-    if (!ahliWaris.includes(kunci)) galat(baris, `keterangan ${kunci} untuk ahli waris yang tidak ada di kasus`);
-  }
+  return sama ? null : `harapan tidak sama dengan engine. Engine: "${tulis(hasil.saham, hasil.ashlAkhir)}"`;
 }
 
 function periksaPeraga(blok: Extract<Blok, { jenis: 'peraga' }>, baris: number, galat: Lapor) {

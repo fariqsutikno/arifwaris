@@ -215,6 +215,16 @@ F1 dikerjakan lebih dulu supaya Codex bisa mulai menulis dengan pemeriksa yang s
 - Belum: lampiran `kasus-berkas` (bundel berkas kasus) belum disimpan oleh impor; pelajaran yang memakainya tetap diimpor
   tetapi nama berkasnya saja yang tersimpan.
 
+### Catatan F5 (2026-11-25)
+
+- `snapshot.json`: entri `modul` jadi 15 (judul dan ringkasan dari kerangka; 11–15 baru). Terjemahan Arab modul 1–10
+  dibuang karena judul/ringkasnya berubah dan tidak dikarang ulang. Entri modul 11–15 memakai id baru; DB belum
+  disentuh (`pnpm pulihkan` / impor akan memasukkannya).
+- Pelajaran lama (11 slug) sudah memakai nomor modul dan urutan yang sama dengan kerangka: tidak ada yang diubah.
+  Tes baru di `progres.test.ts` menjaga progres slug lama tetap terbaca.
+- Peta level: belum ada di kode; hanya riset 15a (`riset-ux-kelas-lms-...-2026-11-20.md`) yang diperbarui.
+- Sidebar dan jalur Belajar sudah menampilkan modul tanpa pelajaran sebagai "menyusul"; tidak ada perubahan kode UI.
+
 ## 13. Keputusan yang masih terbuka
 
 1. Soal dari materi sekaligus masuk bank `soal_kuis` (usulan; F4a mengimplementasikan usulan ini) atau hanya hidup di pelajaran?

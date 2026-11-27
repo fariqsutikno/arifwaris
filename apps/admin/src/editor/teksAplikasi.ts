@@ -6,7 +6,7 @@ import type { IsiTeksEdukasi } from '@waris/content';
 import type { DiksiTerbit, RingkasanEntri, RingkasanKunciDiksi } from '@waris/data';
 import type { SumberTeks } from './teksLayar';
 
-export type StatusTeks = 'terbit' | 'draf' | 'diajukan' | 'dikembalikan';
+export type StatusTeks = 'terbit' | 'draf' | 'diajukan' | 'diperiksa' | 'dikembalikan';
 export interface ButirTeks extends SumberTeks {
   status: StatusTeks;
   lokasi: string[];

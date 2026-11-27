@@ -5084,11 +5084,7 @@
    "isi": {
     "nomor": 1,
     "judul": "Pengantar",
-    "ringkas": "Apa itu faraidh dan apa yang dibereskan sebelum harta dibagi",
-    "ar": {
-     "judul": "مقدمة",
-     "ringkas": "ما الفرائض وما الذي يقدم قبل قسمة المال"
-    }
+    "ringkas": "Apa itu faraidh, harta yang dibereskan dulu, dan peta besar alurnya"
    },
    "refs": [],
    "versiTerbit": 41
@@ -5101,12 +5097,8 @@
    "revisiId": "ed5685db-516b-4e0b-afcb-7a9993731fe5",
    "isi": {
     "nomor": 2,
-    "judul": "Siapa ahli waris",
-    "ringkas": "Rukun, syarat, sebab, penghalang, dan daftar ahli waris",
-    "ar": {
-     "judul": "من هم الورثة",
-     "ringkas": "الأركان والشروط والأسباب والموانع وقائمة الورثة"
-    }
+    "judul": "Siapa yang mewarisi",
+    "ringkas": "Rukun, syarat, sebab, penghalang, dan daftar ahli waris"
    },
    "refs": [],
    "versiTerbit": 42
@@ -5119,12 +5111,8 @@
    "revisiId": "12f6d891-7385-4e88-b195-e20e0b2d58eb",
    "isi": {
     "nomor": 3,
-    "judul": "Bagian pasti (furudh)",
-    "ringkas": "Enam bagian dalam Al-Qur'an dan siapa pemiliknya",
-    "ar": {
-     "judul": "الأنصبة المقدرة (الفروض)",
-     "ringkas": "الفروض الستة في القرآن ومن يستحقها"
-    }
+    "judul": "Bagian pasti",
+    "ringkas": "Enam bagian pasti dan siapa pemiliknya"
    },
    "refs": [],
    "versiTerbit": 43
@@ -5137,12 +5125,8 @@
    "revisiId": "f102a102-af31-4d71-a1e6-51664132d5f6",
    "isi": {
     "nomor": 4,
-    "judul": "Sisa (ashabah)",
-    "ringkas": "Yang mengambil sisa, jenis-jenisnya, dan urutannya",
-    "ar": {
-     "judul": "الباقي (العصبة)",
-     "ringkas": "من يأخذ الباقي وأنواعه وترتيبه"
-    }
+    "judul": "Ashabah",
+    "ringkas": "Yang mengambil sisa, jenis-jenisnya, dan urutannya"
    },
    "refs": [],
    "versiTerbit": 44
@@ -5155,12 +5139,8 @@
    "revisiId": "428bd38b-e2e4-4268-945c-5c55b9af63b4",
    "isi": {
     "nomor": 5,
-    "judul": "Penghalang (hajb)",
-    "ringkas": "Ahli waris yang terhalang atau berkurang bagiannya",
-    "ar": {
-     "judul": "الحجب",
-     "ringkas": "الوارث المحجوب أو الذي ينقص نصيبه"
-    }
+    "judul": "Hajb",
+    "ringkas": "Ahli waris yang tergeser atau berkurang bagiannya"
    },
    "refs": [],
    "versiTerbit": 45
@@ -5173,12 +5153,8 @@
    "revisiId": "5af585d1-5ee9-420d-8fe5-cb1bb0349e52",
    "isi": {
     "nomor": 6,
-    "judul": "Kakek & saudara",
-    "ringkas": "Muqasamah dan akdariyyah",
-    "ar": {
-     "judul": "الجد والإخوة",
-     "ringkas": "المقاسمة والأكدرية"
-    }
+    "judul": "Menghitung",
+    "ringkas": "Penyebut bersama, 'aul, dan radd"
    },
    "refs": [],
    "versiTerbit": 46
@@ -5191,12 +5167,8 @@
    "revisiId": "92ee2199-3e12-47d0-ac11-0444a474b773",
    "isi": {
     "nomor": 7,
-    "judul": "Menghitung",
-    "ringkas": "Ashlul mas'alah, 'aul, dan radd",
-    "ar": {
-     "judul": "الحساب",
-     "ringkas": "أصل المسألة والعول والرد"
-    }
+    "judul": "Tashih",
+    "ringkas": "Supaya bagian tiap orang menjadi bilangan bulat"
    },
    "refs": [],
    "versiTerbit": 47
@@ -5209,12 +5181,8 @@
    "revisiId": "22ea7182-4069-4547-8ad6-cd0897dbb2dd",
    "isi": {
     "nomor": 8,
-    "judul": "Tashih",
-    "ringkas": "Supaya bagian tiap orang jadi bilangan bulat",
-    "ar": {
-     "judul": "التصحيح",
-     "ringkas": "ليصير نصيب كل واحد عددا صحيحا"
-    }
+    "judul": "Dari saham ke rupiah",
+    "ringkas": "Pembagian nominal, takharuj, dan satu kasus utuh"
    },
    "refs": [],
    "versiTerbit": 48
@@ -5227,12 +5195,8 @@
    "revisiId": "d2cadddf-c025-4b2f-9f37-8fed0bd6307d",
    "isi": {
     "nomor": 9,
-    "judul": "Pembagian nominal",
-    "ringkas": "Dari saham ke rupiah",
-    "ar": {
-     "judul": "القسمة بالمبالغ",
-     "ringkas": "من السهام إلى الروبية"
-    }
+    "judul": "Kasus-kasus bernama",
+    "ringkas": "Al-'Umariyyatain dan Al-Musyarrakah"
    },
    "refs": [],
    "versiTerbit": 49
@@ -5245,12 +5209,8 @@
    "revisiId": "26baecd5-15b8-4c44-ba58-a4ed5995208a",
    "isi": {
     "nomor": 10,
-    "judul": "Munasakhat",
-    "ringkas": "Ahli waris wafat sebelum harta dibagi",
-    "ar": {
-     "judul": "المناسخات",
-     "ringkas": "موت الوارث قبل قسمة التركة"
-    }
+    "judul": "Kakek dan saudara",
+    "ringkas": "Muqasamah, Al-Mu'addah, dan Al-Akdariyyah"
    },
    "refs": [],
    "versiTerbit": 50
@@ -8720,6 +8680,76 @@
    },
    "refs": [],
    "versiTerbit": 212
+  },
+  {
+   "entriId": "2787dee9-b61c-4ff5-939a-e210cf7f0917",
+   "jenis": "modul",
+   "slug": "11",
+   "urutan": 11,
+   "revisiId": "79c40462-3921-47ea-ab97-743d9aa7349c",
+   "isi": {
+    "nomor": 11,
+    "judul": "Munasakhat",
+    "ringkas": "Ahli waris wafat sebelum harta dibagi"
+   },
+   "refs": [],
+   "versiTerbit": 215
+  },
+  {
+   "entriId": "53807714-fb70-4bf9-ae23-daa245004396",
+   "jenis": "modul",
+   "slug": "12",
+   "urutan": 12,
+   "revisiId": "d59e0b47-55a9-4436-bb72-4122eb14afac",
+   "isi": {
+    "nomor": 12,
+    "judul": "Dzawil arham",
+    "ringkas": "Kerabat di luar ashabul furudh dan ashabah, dan metode tanzil"
+   },
+   "refs": [],
+   "versiTerbit": 216
+  },
+  {
+   "entriId": "02b4fa8e-2d60-47e5-a078-1ad04e56f3eb",
+   "jenis": "modul",
+   "slug": "13",
+   "urutan": 13,
+   "revisiId": "3b1f56f1-49eb-4236-98d8-95c04a24544c",
+   "isi": {
+    "nomor": 13,
+    "judul": "Prinsip ketidakpastian dan haml",
+    "ringkas": "Memperkirakan dan menahan bagian, janin dalam kandungan"
+   },
+   "refs": [],
+   "versiTerbit": 217
+  },
+  {
+   "entriId": "d80f108a-52b6-4f2a-bad4-cd448214ff2e",
+   "jenis": "modul",
+   "slug": "14",
+   "urutan": 14,
+   "revisiId": "b0fc5c12-2ade-4aca-8a6b-ce4c9583ccf0",
+   "isi": {
+    "nomor": 14,
+    "judul": "Mafqud, khuntsa, dan gharqa",
+    "ringkas": "Orang hilang, khuntsa, dan wafat bersamaan"
+   },
+   "refs": [],
+   "versiTerbit": 218
+  },
+  {
+   "entriId": "d319df0c-5bda-40b1-b705-c12bfe3c1cfa",
+   "jenis": "modul",
+   "slug": "15",
+   "urutan": 15,
+   "revisiId": "e923871d-2e27-4cb6-ac60-082950ca9af9",
+   "isi": {
+    "nomor": 15,
+    "judul": "Kasus khusus lain",
+    "ringkas": "Murtad, anak li'an dan anak zina, anak temuan"
+   },
+   "refs": [],
+   "versiTerbit": 219
   }
  ],
  "diksi": [
@@ -30420,6 +30450,517 @@
    "kunci": "narasi.sisa_hak.kas_kurang",
    "halaman": "narasi",
    "id": "Harta yang tersisa tidak cukup untuk semua sisa bagian karena ada kelebihan di atas. Perlu disepakati keluarga atau ditanyakan ke pengadilan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.bank_judul",
+   "halaman": "latihan",
+   "id": "Soal acak dari bank",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.bank_pengantar",
+   "halaman": "latihan",
+   "id": "Kasus buatan generator, jumlahnya tak terbatas. Pilih tingkat dan modul, lalu mulai.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.bank_modul",
+   "halaman": "latihan",
+   "id": "Modul",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.bank_semua_modul",
+   "halaman": "latihan",
+   "id": "Semua modul",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.bank_mulai",
+   "halaman": "latihan",
+   "id": "Mulai soal",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.bank_mencari",
+   "halaman": "latihan",
+   "id": "Mencari soal...",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.bank_tidak_terhubung",
+   "halaman": "latihan",
+   "id": "Bank soal belum bisa dijangkau. Periksa koneksimu, atau kerjakan soal dari daftar di bawah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.bank_tidak_ada_cocok",
+   "halaman": "latihan",
+   "id": "Belum ada soal yang cocok dengan pilihan ini. Coba tingkat atau modul lain.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.soal_dari_bank",
+   "halaman": "latihan",
+   "id": "Soal dari bank",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.pewaris.l",
+   "halaman": "soal_kuis",
+   "id": "laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.pewaris.p",
+   "halaman": "soal_kuis",
+   "id": "perempuan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.daftar.jumlah",
+   "halaman": "soal_kuis",
+   "id": "{jumlah} {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.pertanyaan.kasus",
+   "halaman": "soal_kuis",
+   "id": "Seorang {pewaris} wafat dan meninggalkan ahli waris berikut: {daftar}. Tidak ada hutang maupun wasiat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.tanya.bagian",
+   "halaman": "soal_kuis",
+   "id": "Menurut madzhab Syafi'i, berapa bagian akhir {siapa} dari seluruh harta?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.tanya.bagian_banyak",
+   "halaman": "soal_kuis",
+   "id": "Menurut madzhab Syafi'i, berapa bagian akhir {siapa} secara keseluruhan (bukan per orang) dari seluruh harta?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.tanya.gugur",
+   "halaman": "soal_kuis",
+   "id": "Menurut madzhab Syafi'i, siapa yang tidak mendapat bagian karena terhalang (hajb hirman)?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.tanya.ashl_akhir",
+   "halaman": "soal_kuis",
+   "id": "Berapa penyebut akhir pembagian ini, yaitu ashl setelah 'aul, radd, atau tashih bila terjadi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.tanya.ashabah",
+   "halaman": "soal_kuis",
+   "id": "Menurut madzhab Syafi'i, siapa yang menerima sisa harta sebagai ashabah?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.pilihan.tidak_ada_gugur",
+   "halaman": "soal_kuis",
+   "id": "Tidak ada yang terhalang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.alasan.tepat",
+   "halaman": "soal_kuis",
+   "id": "Tepat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.alasan.belum_tepat",
+   "halaman": "soal_kuis",
+   "id": "Belum tepat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.benar.bagian",
+   "halaman": "soal_kuis",
+   "id": "Bagian akhir {siapa} adalah hasil perhitungan faraidh setelah semua tahap hisab.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.benar.gugur",
+   "halaman": "soal_kuis",
+   "id": "{mahjub} terhalang oleh {hajib} (hajb hirman), sehingga tidak mendapat bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.benar.ashabah",
+   "halaman": "soal_kuis",
+   "id": "{siapa} menerima sisa harta sebagai ashabah, setelah para ashabul furudh mengambil bagiannya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.benar.penyebut.tetap",
+   "halaman": "soal_kuis",
+   "id": "Jumlah saham sama dengan ashl, jadi penyebut akhirnya tetap {akhir}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.benar.penyebut.aul",
+   "halaman": "soal_kuis",
+   "id": "Jumlah saham melebihi ashl {ashl}, sehingga 'aul menaikkan penyebut menjadi {akhir}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.benar.penyebut.radd",
+   "halaman": "soal_kuis",
+   "id": "Jumlah saham kurang dari ashl {ashl} dan tidak ada ashabah, sehingga sisa dikembalikan (radd) dan penyebut menjadi {akhir}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.benar.penyebut.tashih",
+   "halaman": "soal_kuis",
+   "id": "Penyebut sebelum tashih adalah {dasar}. Ada saham yang tidak habis dibagi jumlah kepala, sehingga tashih mengalikannya dan penyebut akhir menjadi {akhir}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.pengecoh.lupa_aul",
+   "halaman": "soal_kuis",
+   "id": "Angka ini diambil sebelum 'aul. Jumlah saham melebihi ashl {ashl}, sehingga 'aul menaikkan penyebut menjadi {aul} dan bagian semua ahli waris mengecil sebanding.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.pengecoh.lupa_radd",
+   "halaman": "soal_kuis",
+   "id": "Angka ini diambil sebelum radd. Jumlah saham kurang dari ashl {ashl} dan tidak ada ashabah, sehingga sisa dikembalikan kepada ahli waris selain pasangan menurut perbandingan saham mereka, dan penyebut menjadi {radd}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.pengecoh.lupa_hajb.gugur",
+   "halaman": "soal_kuis",
+   "id": "Menganggap semua ahli waris mendapat bagian berarti melupakan hajb hirman: {mahjub} terhalang oleh {hajib}, sehingga tidak mendapat bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.pengecoh.lupa_hajb.ashabah",
+   "halaman": "soal_kuis",
+   "id": "{mahjub} ikut dianggap menerima sisa, padahal terhalang oleh {hajib} (hajb hirman) dan tidak mendapat apa pun.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.pengecoh.ibu_tetap_sepertiga.faru_warits",
+   "halaman": "soal_kuis",
+   "id": "Ibu mendapat 1/3 hanya bila pewaris tidak meninggalkan keturunan yang mewarisi dan tidak ada dua saudara atau lebih. Di sini ada keturunan yang mewarisi, sehingga ibu mendapat 1/6.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.pengecoh.ibu_tetap_sepertiga.jam_ikhwah",
+   "halaman": "soal_kuis",
+   "id": "Ibu mendapat 1/3 hanya bila pewaris tidak meninggalkan keturunan yang mewarisi dan tidak ada dua saudara atau lebih. Di sini ada dua saudara atau lebih (yang terhalang pun tetap dihitung), sehingga ibu mendapat 1/6.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.pengecoh.pasangan_tertukar.ada_keturunan",
+   "halaman": "soal_kuis",
+   "id": "Ada keturunan pewaris yang mewarisi, sehingga bagian {pasangan} adalah {benar}, bukan {keliru}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.pengecoh.pasangan_tertukar.tanpa_keturunan",
+   "halaman": "soal_kuis",
+   "id": "Tidak ada keturunan pewaris yang mewarisi, sehingga bagian {pasangan} adalah {benar}, bukan {keliru}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.pengecoh.ashabah_sama_rata",
+   "halaman": "soal_kuis",
+   "id": "Sisa dibagi dengan ketentuan laki-laki mendapat dua kali bagian perempuan (2:1), bukan sama rata per kepala.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.pengecoh.ashabah_terbalik.gugur",
+   "halaman": "soal_kuis",
+   "id": "{kuat} justru yang menghalangi, bukan yang terhalang: {kalah} lebih jauh sehingga gugur.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.pengecoh.ashabah_terbalik.ashabah",
+   "halaman": "soal_kuis",
+   "id": "{kalah} lebih jauh daripada {kuat}, sehingga terhalang dan tidak menerima sisa. Sisa diambil kerabat yang lebih dekat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.benar.akhir.aul",
+   "halaman": "soal_kuis",
+   "id": "Karena 'aul menaikkan penyebut dari {ashl} menjadi {aul}, bagian akhir {siapa} adalah {bagian}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.benar.akhir.radd",
+   "halaman": "soal_kuis",
+   "id": "Setelah radd penyebut menjadi {radd}, sehingga bagian akhir {siapa} adalah {bagian}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.benar.akhir.umum",
+   "halaman": "soal_kuis",
+   "id": "Jadi bagian akhir {siapa} secara keseluruhan adalah {bagian} dari seluruh harta.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.kuis_bank_judul",
+   "halaman": "latihan",
+   "id": "Soal kuis acak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.kuis_bank_pengantar",
+   "halaman": "latihan",
+   "id": "Soal pilihan ganda dari hitungan faraidh, dibuat otomatis. Pilih tingkat dan modul, lalu mulai.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.kuis_bank_mulai",
+   "halaman": "latihan",
+   "id": "Mulai soal kuis",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.kuis_bank_soal_lain",
+   "halaman": "latihan",
+   "id": "Soal kuis lain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.kuis_bank_tidak_ada_cocok",
+   "halaman": "latihan",
+   "id": "Belum ada soal kuis yang cocok dengan pilihan ini. Coba tingkat atau modul lain.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.halaman_judul",
+   "halaman": "soal_kuis",
+   "id": "Aturan pengecoh",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.halaman_pengantar",
+   "halaman": "soal_kuis",
+   "id": "Tiap pilihan yang salah di soal kuis lahir dari satu kesalahpahaman yang umum. Periksa lima contoh soal untuk tiap aturan. Setelah Anda setujui, semua soal yang memakai aturan itu boleh tampil ke pelajar; soal yang masih memuat aturan yang belum disetujui tidak ditampilkan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.status_disetujui",
+   "halaman": "soal_kuis",
+   "id": "Disetujui",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.status_belum",
+   "halaman": "soal_kuis",
+   "id": "Belum disetujui",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.setujui",
+   "halaman": "soal_kuis",
+   "id": "Setujui",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.cabut",
+   "halaman": "soal_kuis",
+   "id": "Cabut persetujuan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.contoh_judul",
+   "halaman": "soal_kuis",
+   "id": "Contoh soal",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.contoh_kosong",
+   "halaman": "soal_kuis",
+   "id": "Belum ada soal di bank yang memakai aturan ini.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.contoh_lain",
+   "halaman": "soal_kuis",
+   "id": "Tampilkan contoh lain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.hanya_keilmuan",
+   "halaman": "soal_kuis",
+   "id": "Halaman ini untuk tim keilmuan dan admin.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.lupa_aul.nama",
+   "halaman": "soal_kuis",
+   "id": "Lupa 'aul",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.lupa_aul.penjelasan",
+   "halaman": "soal_kuis",
+   "id": "Pilihan keliru memakai bagian sebelum 'aul. Padahal bila jumlah bagian melebihi asal masalah, penyebut dinaikkan dan semua bagian mengecil.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.lupa_radd.nama",
+   "halaman": "soal_kuis",
+   "id": "Lupa radd",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.lupa_radd.penjelasan",
+   "halaman": "soal_kuis",
+   "id": "Pilihan keliru memakai bagian sebelum radd. Padahal bila jumlah bagian kurang dari asal masalah dan tidak ada ashabah, sisa harta dikembalikan kepada ahli waris yang berhak.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.lupa_hajb.nama",
+   "halaman": "soal_kuis",
+   "id": "Lupa penghalang (hajb)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.lupa_hajb.penjelasan",
+   "halaman": "soal_kuis",
+   "id": "Pilihan keliru menganggap ahli waris yang terhalang kerabat lebih dekat tetap menerima bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.ibu_tetap_sepertiga.nama",
+   "halaman": "soal_kuis",
+   "id": "Ibu selalu sepertiga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.ibu_tetap_sepertiga.penjelasan",
+   "halaman": "soal_kuis",
+   "id": "Pilihan keliru memberi ibu sepertiga. Padahal bila ada keturunan yang mewarisi atau dua saudara atau lebih, bagian ibu turun menjadi seperenam.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.pasangan_tertukar.nama",
+   "halaman": "soal_kuis",
+   "id": "Bagian suami atau istri tertukar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.pasangan_tertukar.penjelasan",
+   "halaman": "soal_kuis",
+   "id": "Pilihan keliru memakai bagian pasangan untuk keadaan sebaliknya: bagian tanpa keturunan padahal ada keturunan, atau sebaliknya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.ashabah_sama_rata.nama",
+   "halaman": "soal_kuis",
+   "id": "Sisa dibagi sama rata",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.ashabah_sama_rata.penjelasan",
+   "halaman": "soal_kuis",
+   "id": "Pilihan keliru membagi sisa sama rata antara laki-laki dan perempuan. Padahal laki-laki mendapat dua kali bagian perempuan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.ashabah_terbalik.nama",
+   "halaman": "soal_kuis",
+   "id": "Penerima sisa tertukar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.ashabah_terbalik.penjelasan",
+   "halaman": "soal_kuis",
+   "id": "Pilihan keliru memberi sisa kepada kerabat yang lebih jauh, atau menganggap kerabat yang lebih dekat sebagai yang terhalang.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.memuat",
+   "halaman": "soal_kuis",
+   "id": "Memuat contoh soal...",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.contoh_nomor",
+   "halaman": "soal_kuis",
+   "id": "Contoh {nomor}",
    "ar": null,
    "versiTerbit": 873
   }

@@ -3,15 +3,17 @@
 // lewat aturan murni di packages/content, supaya tes app tanpa jaringan tetap setia pada perilaku DB.
 // Isi disimpan dalam bentuk JSON (keJson) seperti di jsonb, lalu dibaca ulang lewat saringValid.
 import {
-  bolehPulihkanEntri, bolehSuntingDraf, caraBuangEntri, keJson, periksaRefs, transisiRevisi, bolehAbaikanRevisi, bacaIsi,
+  bolehPulihkanEntri, bolehSuntingDraf, caraBuangEntri, keJson, periksaRefs, transisiRevisi, bolehAbaikanRevisi, bacaIsi, JUMLAH_BUTIR_CEKLIS,
   type AksiEditorial, type IsiKonten, type JenisKonten, type Peran, type StatusRevisi,
 } from '@waris/content';
 import type {
   DiksiTerbit, HasilAi, PermintaanAi, RepositoriAi, JejakEntri, PeranPengguna, RepositoriAkun, RepositoriDiksi, RepositoriEditorial, RepositoriKonten, RingkasanEntri,
-  RingkasanKunciDiksi, RingkasanRevisi, RingkasanRevisiDiksi, Sesi,
+  RingkasanKunciDiksi, RingkasanRevisi, RingkasanRevisiDiksi, RevisiAntrean, Sesi,
 } from '../antarmuka.js';
 import { BATAS_AJUAN_SAYA } from '../antarmuka.js';
 import { saringValid } from '../saring.js';
+import type { RepositoriAturanPengecoh, RepositoriBankSoal } from '../bank.js';
+import { buatMemoriBank } from './bank.js';
 
 interface EntriMemori {
   id: string; jenis: JenisKonten; slug: string; urutan: number; revisiTerbitId: string | null; versiTerbit: number | null; dibuang: boolean; diarsipkan: boolean;
@@ -25,6 +27,8 @@ export interface MemoriBersama {
   diksi: RepositoriDiksi;
   akun: RepositoriAkun;
   ai: RepositoriAi;
+  /** Bank soal + persetujuan aturan pengecoh; persetujuan menegakkan peran keilmuan/admin seperti RLS. */
+  bank: RepositoriBankSoal & RepositoriAturanPengecoh;
   masukSebagai(sesi: Sesi | null): void;
   aturPeranLangsung(userId: string, peran: Peran | null): void;
   /** Hanya untuk tes: meniru baris jsonb yang disunting manual di DB. */
@@ -50,6 +54,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
   const entri = new Map<string, EntriMemori>();
   const revisi = new Map<string, RingkasanRevisi>();
   const jejak: JejakEntri[] = [];
+  const ceklis = new Map<string, Set<number>>(); // revisiId → nomor butir yang dicentang (tabel ceklis_review)
   const kunciDiksi = new Map<string, KunciDiksiMemori>();
   const revisiDiksi = new Map<string, RingkasanRevisiDiksi>();
   const pengguna = new Map<string, PenggunaMemori>(); // kunci: email lowercase, meniru auth.users
@@ -81,9 +86,9 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
   };
   const jalankanTransisi = (
     target: { status: StatusRevisi; dibuatOleh: string; diperiksaOleh: string | null; catatanReview: string | null; diperiksaPada?: string | null },
-    aksi: AksiEditorial, catatan?: string,
+    aksi: AksiEditorial, catatan?: string, tambahan: { duaTahap?: boolean; butirDicentang?: Iterable<number> } = {},
   ) => {
-    const hasil = transisiRevisi({ ...pelaku(), pembuatId: target.dibuatOleh, status: target.status, aksi, ...(catatan === undefined ? {} : { catatan }) });
+    const hasil = transisiRevisi({ ...pelaku(), pembuatId: target.dibuatOleh, status: target.status, aksi, ...(catatan === undefined ? {} : { catatan }), ...tambahan });
     if (!hasil.ok) throw new Error(hasil.galat);
     target.status = hasil.status;
     if (aksi !== 'ajukan' && aksi !== 'tarik' && aksi !== 'perbarui') {
@@ -93,6 +98,11 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     if (aksi === 'kembalikan') target.catatanReview = catatan ?? null;
   };
   const wajibPemeriksa = () => wajibPeran('admin', 'reviewer');
+  // Soal kuis (selain penanda hapus) lewat dua tahap, cermin butuh_dua_tahap() di database.
+  const transisiKonten = (target: RingkasanRevisi, aksi: AksiEditorial, catatan?: string) =>
+    jalankanTransisi(target, aksi, catatan, {
+      duaTahap: !target.hapus && ambil(entri, target.entriId, 'entri').jenis === 'soal_kuis', butirDicentang: ceklis.get(target.id) ?? [],
+    });
   const nomorDari = (id: string) => Number(id.slice(id.lastIndexOf('-') + 1));
   const terakhirDari = <T extends { id: string }>(daftar: T[]): T | null =>
     daftar.reduce<T | null>((teratas, baris) => (!teratas || nomorDari(baris.id) > nomorDari(teratas.id) ? baris : teratas), null);
@@ -187,14 +197,26 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       target.refs = [...refs];
     },
     async ajukan(revisiId) { jalankanTransisi(ambil(revisi, revisiId, 'revisi'), 'ajukan'); },
+    async periksa(revisiId) { transisiKonten(ambil(revisi, revisiId, 'revisi'), 'periksa'); },
+    // [supabase/migrations/20261127000003_review_dua_tahap.sql] kebijakan centang/cabut: admin/reviewer, revisi masih diajukan.
+    async aturCeklis(revisiId, butir, dicentang) {
+      wajibPemeriksa();
+      const target = ambil(revisi, revisiId, 'revisi');
+      if (!Number.isInteger(butir) || butir < 1 || butir > JUMLAH_BUTIR_CEKLIS) throw new Error(`butir checklist ${butir} tidak ada`);
+      if (target.status !== 'diajukan') throw new Error('checklist hanya bisa diubah selagi revisi diajukan');
+      const dicentangSekarang = ceklis.get(revisiId) ?? new Set<number>();
+      if (dicentang) dicentangSekarang.add(butir); else dicentangSekarang.delete(butir);
+      ceklis.set(revisiId, dicentangSekarang);
+    },
+    async daftarCeklis(revisiId) { return [...(ceklis.get(revisiId) ?? [])].sort((a, b) => a - b); },
     async setujui(revisiId) {
       const target = ambil(revisi, revisiId, 'revisi');
-      jalankanTransisi(target, 'setujui');
+      transisiKonten(target, 'setujui');
       const tujuan = ambil(entri, target.entriId, 'entri');
       tujuan.revisiTerbitId = revisiId;
       tujuan.versiTerbit = ++versi;
     },
-    async kembalikan(revisiId, catatan) { jalankanTransisi(ambil(revisi, revisiId, 'revisi'), 'kembalikan', catatan); },
+    async kembalikan(revisiId, catatan) { transisiKonten(ambil(revisi, revisiId, 'revisi'), 'kembalikan', catatan); },
     async terbitkanUlang(revisiId) {
       wajibPemeriksa();
       const target = ambil(revisi, revisiId, 'revisi');
@@ -204,7 +226,10 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       tujuan.versiTerbit = ++versi;
     },
     // Sama seperti daftarEntri: penyaringan peran ditegakkan lewat gerbang portal, bukan diulang di memori.
-    async antreanReview() { return [...revisi.values()].filter(baris => baris.status === 'diajukan'); },
+    async antreanReview(): Promise<RevisiAntrean[]> {
+      return [...revisi.values()].filter(baris => baris.status === 'diajukan' || baris.status === 'diperiksa')
+        .map(baris => ({ ...baris, jenis: ambil(entri, baris.entriId, 'entri').jenis }));
+    },
     async revisiSaya(userId) {
       return milikTerbaru([...revisi.values()], userId).map(r => {
         const { jenis, slug } = ambil(entri, r.entriId, 'entri');
@@ -233,7 +258,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       if (tujuan.dibuang) throw new Error('entri ada di Sampah; pulihkan dulu');
       // [supabase/migrations/20260928000003_ai_bantu.sql] draf AI wajib review sebelum pertama kali tayang.
       if ((target.isi as { dibantuAi?: unknown }).dibantuAi === true && !tujuan.revisiTerbitId) throw new Error('draf yang dibuat dengan AI wajib lewat review');
-      jalankanTransisi(target, 'terbitkan');
+      transisiKonten(target, 'terbitkan');
       tujuan.revisiTerbitId = revisiId;
       tujuan.versiTerbit = ++versi;
     },
@@ -251,7 +276,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       if (!cara.ok) throw new Error(cara.galat);
       const catatan = alasan?.trim() || null;
       if (!baris.revisiTerbitId) {
-        for (const r of revisi.values()) if (r.entriId === entriId && r.status === 'diajukan') r.status = 'draf';
+        for (const r of revisi.values()) if (r.entriId === entriId && (r.status === 'diajukan' || r.status === 'diperiksa')) r.status = 'draf';
         baris.dibuang = true;
         catatJejak(entriId, 'dibuang', catatan);
         return 'dibuang';
@@ -412,8 +437,16 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     },
   };
 
+  const bankDasar = buatMemoriBank();
+  const bank: MemoriBersama['bank'] = {
+    ...bankDasar,
+    async setujui(aturan) { wajibPeran('keilmuan', 'admin'); return bankDasar.setujui(aturan); },
+    async cabut(aturan) { wajibPeran('keilmuan', 'admin'); return bankDasar.cabut(aturan); },
+    async contohSoal(aturan, jumlah, benih) { wajibPeran('keilmuan', 'admin'); return bankDasar.contohSoal(aturan, jumlah, benih); },
+  };
+
   return {
-    konten, editorial, diksi, akun, ai,
+    konten, editorial, diksi, akun, ai, bank,
     masukSebagai(sesiBaru) { sesi = sesiBaru; },
     aturPeranLangsung(userId, peranBaru) { if (peranBaru) peran.set(userId, peranBaru); else peran.delete(userId); },
     isiRevisiMentah(revisiId, isi) { ambil(revisi, revisiId, 'revisi').isi = isi; },

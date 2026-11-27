@@ -3,6 +3,7 @@
 // dari dua tempat simpan (teks edukasi & diksi), termasuk yang tidak tampil di layar mana pun (tur, pesan galat);
 // label pendek disembunyikan kecuali "Tampilkan juga label pendek" (kurasi C6). Tiap butir: teks Indonesia/Arab,
 // "Tampil di", status, Sunting (dialog di EditorTeksAplikasi) dan Riwayat.
+import { bisaMenulis } from '@waris/content';
 import { useMemo, useState } from 'react';
 import lokasiTeks from 'virtual:lokasi-teks';
 import type { RingkasanEntri, RingkasanKunciDiksi } from '@waris/data';
@@ -17,7 +18,7 @@ import { usePortal } from '../repo';
 import { tulisRute } from '../rute';
 import { RiwayatDiksi } from './RiwayatDiksi';
 
-const LABEL_STATUS: Record<StatusTeks, string> = { terbit: 'Terbit', draf: 'Draf', diajukan: 'Menunggu review', dikembalikan: 'Dikembalikan' };
+const LABEL_STATUS: Record<StatusTeks, string> = { terbit: 'Terbit', draf: 'Draf', diajukan: 'Menunggu review', diperiksa: 'Menunggu keilmuan', dikembalikan: 'Dikembalikan' };
 const BATAS_HASIL_CARI = 50;
 export const kunciTeks = (sumber: { sumber: string; kunci: string }) => `${sumber.sumber}/${sumber.kunci}`;
 
@@ -85,7 +86,7 @@ function ButirDaftar({ butir, saatSunting, saatBerubah, saatSorot }: {
       <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
         <span>Tampil di: {butir.lokasi.length ? butir.lokasi.join(' · ') : 'belum diketahui'}</span>
         {butir.status !== 'terbit' ? <Badge variant="outline">{LABEL_STATUS[butir.status]}</Badge> : null}
-        <Button variant="link" size="sm" className="h-auto p-0 text-xs" onClick={saatSunting}>{peran === 'reviewer' ? 'Lihat' : 'Sunting'}</Button>
+        <Button variant="link" size="sm" className="h-auto p-0 text-xs" onClick={saatSunting}>{!bisaMenulis(peran) ? 'Lihat' : 'Sunting'}</Button>
         {butir.entriId
           ? <a className="text-primary underline-offset-4 hover:underline" href={tulisRute({ layar: 'entri', entriId: butir.entriId })}>Riwayat</a>
           : <Button variant="link" size="sm" className="h-auto p-0 text-xs" aria-expanded={riwayat} onClick={() => setRiwayat(!riwayat)}>Riwayat</Button>}

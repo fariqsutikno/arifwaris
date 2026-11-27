@@ -9,7 +9,7 @@
 // terbit, lalu dipasang ulang tiap kali data berubah: semua tempat yang memakai teks sama ikut berubah dan tetap bergaris.
 // Batas: teks yang dibaca web di konstanta tingkat modul baru berubah setelah portal dimuat ulang.
 import { Component, useEffect, useLayoutEffect, useMemo, useState, type ReactNode } from 'react';
-import { bolehAbaikanRevisi, bolehPerbaruiAjuan, keJson, type IsiTeksEdukasi } from '@waris/content';
+import { bolehAbaikanRevisi, bolehPerbaruiAjuan, keJson, type IsiTeksEdukasi, bisaMenulis } from '@waris/content';
 import type { RingkasanEntri, RingkasanKunciDiksi } from '@waris/data';
 import { pasangSnapshot, snapshotTerpasang } from '@waris/web/sumber';
 import { BingkaiWeb } from './BingkaiWeb';
@@ -177,7 +177,7 @@ export function EditorTeksAplikasi() {
       </div>
       {dipilih ? (
         data ? (
-          <DialogSunting pilihan={dipilih.sumber} data={data} bacaSaja={peran === 'reviewer'} layarSekarang={dipilih.simpul ? bagian.judul : undefined}
+          <DialogSunting pilihan={dipilih.sumber} data={data} bacaSaja={!bisaMenulis(peran)} layarSekarang={dipilih.simpul ? bagian.judul : undefined}
             saatTutup={() => setDipilih(null)} saatTersimpan={setelahSimpan} />
         ) : <Skeleton className="h-10" />
       ) : null}

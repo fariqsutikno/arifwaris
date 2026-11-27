@@ -19,7 +19,7 @@ export type HasilPeriksa =
   | { terbaca: false; temuan: Temuan[] };
 
 const JUDUL_PENUTUP = ['Cek pemahaman', 'Ringkasnya'] as const;
-const KATA_TIDAK_BAKU = ['nggak', 'gak', 'banget', 'aja', 'kayak', 'karna', 'praktek', 'bro', 'udah', 'gimana'];
+export const KATA_TIDAK_BAKU = ['nggak', 'gak', 'banget', 'aja', 'kayak', 'karna', 'praktek', 'bro', 'udah', 'gimana'];
 const PENGANTAR_DIBUAT_BUAT = ['coba bayangkan', 'pernahkah kamu', 'mari kita menyelami'];
 const KATA_KALIMAT_MAKS = 35;
 const KATA_PER_MENIT = 180;
@@ -59,7 +59,7 @@ export function kodeSoalGanda(daftar: { namaBerkas: string; pelajaran: Pelajaran
   return [...pemakai].filter(([, berkas]) => berkas.length > 1).map(([kode, berkas]) => ({ kode, berkas }));
 }
 
-type Lapor = (baris: number, pesan: string) => void;
+export type Lapor = (baris: number, pesan: string) => void;
 
 function periksaKepala(pelajaran: Pelajaran, namaBerkas: string, konteks: KonteksPeriksa, galat: Lapor) {
   const namaDasar = namaBerkas.split('/').at(-1)!.replace(/\.md$/, '');
@@ -89,7 +89,7 @@ function periksaPotongan(pelajaran: Pelajaran, barisBlok: number[], konteks: Kon
   });
 }
 
-function periksaSatuPotongan(potongan: Potongan, baris: number, bagianSendiri: ReadonlySet<string>, konteks: KonteksPeriksa, galat: Lapor) {
+export function periksaSatuPotongan(potongan: Potongan, baris: number, bagianSendiri: ReadonlySet<string>, konteks: KonteksPeriksa, galat: Lapor) {
   switch (potongan.jenis) {
     case 'istilah':
       if (!cariIstilah(potongan.id)) galat(baris, `istilah [[${potongan.id}]] tidak ada di glosarium; tulis *miring* dan catat di LAPORAN.md`);
@@ -115,7 +115,7 @@ function periksaTujuanPeta(simpul: SimpulPeta, baris: number, bagianSendiri: Rea
   for (const anak of simpul.anak) periksaTujuanPeta(anak, baris, bagianSendiri, galat);
 }
 
-function periksaRujukanBlok(blok: Blok[], barisBlok: number[], galat: Lapor) {
+export function periksaRujukanBlok(blok: Blok[], barisBlok: number[], galat: Lapor) {
   blok.forEach((isi, i) => {
     const daftarKode = isi.jenis === 'dasar' || isi.jenis === 'soal' ? isi.rujukan : [];
     for (const kode of daftarKode) if (!cariRujukan(kode)) galat(barisBlok[i]!, `kode rujukan ${kode} tidak ada di tabel "Dasar dan Rujukan" KB`);
@@ -124,7 +124,7 @@ function periksaRujukanBlok(blok: Blok[], barisBlok: number[], galat: Lapor) {
 }
 
 /** Hal yang paling mudah dilihat di teks mentah: HTML, tautan web, emoji, tanda pisah panjang. */
-function periksaTeksMentah(teks: string, galat: Lapor, peringatan: Lapor) {
+export function periksaTeksMentah(teks: string, galat: Lapor, peringatan: Lapor) {
   let dalamVideo = false;
   teks.split('\n').forEach((baris, i) => {
     const nomor = i + 1;
@@ -159,7 +159,7 @@ function periksaGaya(pelajaran: Pelajaran, barisBlok: number[], peringatan: Lapo
 
 const hitungKata = (teks: string) => teks.split(/\s+/).filter(Boolean).length;
 
-function teksPolos(daftar: Potongan[]): string {
+export function teksPolos(daftar: Potongan[]): string {
   return daftar.map(potongan => {
     switch (potongan.jenis) {
       case 'teks': case 'tebal': case 'miring': case 'istilah': return potongan.teks;

@@ -21,6 +21,7 @@ import { Beranda } from './layar/Beranda';
 import { AntreanReview } from './layar/AntreanReview';
 import { AjuanSaya } from './layar/AjuanSaya';
 import { KelolaPeran } from './layar/KelolaPeran';
+import { AturanPengecoh } from './layar/AturanPengecoh';
 import { bolehTinggalkan } from './penjaga';
 import { pesanGalat } from './pesanGalat';
 
@@ -118,6 +119,7 @@ function IsiRute({ rute, saatJenisEntri }: { rute: Rute; saatJenisEntri: (jenis:
   if (rute.layar === 'review') return <AntreanReview />;
   if (rute.layar === 'ajuan') return <AjuanSaya />;
   if (rute.layar === 'peran') return peran === 'admin' ? <KelolaPeran /> : <p>Hanya admin.</p>;
+  if (rute.layar === 'aturan') return <AturanPengecoh />;
   return <Beranda />;
 }
 

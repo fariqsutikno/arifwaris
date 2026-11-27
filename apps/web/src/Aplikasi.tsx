@@ -31,7 +31,8 @@ import { Glosarium } from './layar/belajar/Glosarium';
 import { Latihan } from './layar/belajar/Latihan';
 import { Materi } from './layar/belajar/Materi';
 import { ContohJadi } from './layar/belajar/ContohJadi';
-import { cariSoalHitung, daftarSoalHitung, revisiIdSoalHitung } from './konten/sumber';
+import { daftarSoalHitung } from './konten/sumber';
+import { adalahSoalBank, cariSoal, revisiIdSoal } from './bank/soalBank';
 import { bobotXpSoal } from './tanggaBantuan';
 import { judulTopik, urutanSoalHitung } from './layar/belajar/KuisKonsep';
 import { Rujukan } from './layar/rujukan/Rujukan';
@@ -169,7 +170,7 @@ export function Aplikasi() {
   const kodeSoalDiUrl = rute.halaman === 'kalkulator' ? rute.soal : undefined;
   useEffect(() => {
     if (!kodeSoalDiUrl || (sumberSesi.jenis === 'latihan' && sumberSesi.kode === kodeSoalDiUrl)) return;
-    const soal = cariSoalHitung(kodeSoalDiUrl);
+    const soal = cariSoal(kodeSoalDiUrl);
     if (soal) { kerjakanSoal(soal); return; }
     setToast({ teks: t('latihan.soal_tidak_ditemukan') });
     window.location.hash = tautanLatihan('hitung');
@@ -252,7 +253,7 @@ export function Aplikasi() {
     setSoalAktif(pembahasan ? null : soal);
   };
   const kerjakanUlangSoal = () => {
-    const soal = sumberSesi.jenis === 'latihan' ? daftarSoalHitung().find(isi => isi.kode === sumberSesi.kode) : undefined;
+    const soal = sumberSesi.jenis === 'latihan' ? cariSoal(sumberSesi.kode) : undefined;
     if (soal) kerjakanSoal(soal, true);
   };
   // Otomatis sekali di kunjungan pertama tiap layar yang punya tur.
@@ -293,7 +294,7 @@ export function Aplikasi() {
             tanpaSimpan={sumberSesi.jenis === 'latihan'} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
             saatHapusKasus={adalahKasusPengguna(sumberSesi) ? hapusKasusIni : undefined}
             saatDikerjakan={soalAktif ? benar => tandaiSoalDikerjakan(soalAktif, benar) : undefined}
-            soal={soalAktif ? { id: soalAktif.kode, revisiId: revisiIdSoalHitung(soalAktif.kode) ?? '', bobotXp: bobotXpSoal(soalAktif) } : undefined}
+            soal={soalAktif ? { id: soalAktif.kode, revisiId: revisiIdSoal(soalAktif.kode), bobotXp: bobotXpSoal(soalAktif) } : undefined}
             urutanLatihan={soalAktif ? urutanLatihanDari(soalAktif, kerjakanSoal) : undefined}
             salinan={adalahKasusPengguna(sumberSesi) || soalAktif ? undefined : { saatJadikanKasus: jadikanKasusSendiri, saatKerjakanUlang: sumberSesi.jenis === 'latihan' ? kerjakanUlangSoal : undefined, soal: sumberSesi.jenis === 'latihan' }} />}
       <Toast isi={toast} saatHilang={() => setToast(null)} />
@@ -323,7 +324,7 @@ export function pulihDariUrl(hash: string, tujuan: Tujuan | null): { id: string;
 /** Keadaan dari `#/latihan/soal/<kode>`: soal selesai = pembahasan (hasil terbuka), selain itu tebak. Null bila bukan alamat soal atau kodenya tak dikenal. */
 export function pulihDariSoal(hash: string, tujuan: Tujuan | null): { soal: SoalHitung; pembahasan: boolean; keadaan: KeadaanAplikasi } | null {
   const rute = bacaRute(hash);
-  const soal = rute.halaman === 'kalkulator' && rute.soal ? cariSoalHitung(rute.soal) : undefined;
+  const soal = rute.halaman === 'kalkulator' && rute.soal ? cariSoal(rute.soal) : undefined;
   if (!soal) return null;
   const kasus = kasusDariSoal(soal.kasus);
   const pembahasan = sudahSelesai(soal);
@@ -348,6 +349,8 @@ const buatIdSesi = () => `${Date.now().toString(36)}-${Math.random().toString(36
 
 /** Posisi soal di urutan daftar Latihan (satu sumber: urutanSoalHitung) dan aksi ke soal sesudahnya. */
 function urutanLatihanDari(soal: SoalHitung, kerjakan: (soal: SoalHitung) => void) {
+  // Soal bank tak punya nomor di daftar (jumlah 0 = tanpa nomor) dan tak punya "berikutnya": kembali ke Latihan memilih lagi.
+  if (adalahSoalBank(soal.kode)) return { nomor: 0, jumlah: 0, bab: t('latihan.soal_dari_bank'), judul: judulSoalTampil(soal, !!bacaProgresLatihan('hitung')[soal.kode]), saatBerikutnya: undefined };
   const urutan = urutanSoalHitung(daftarSoalHitung());
   const indeks = urutan.findIndex(isi => isi.kode === soal.kode);
   const berikutnya = urutan[indeks + 1];

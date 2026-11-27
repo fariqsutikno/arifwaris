@@ -51,3 +51,7 @@ describe('predikat dan penanda XP', () => {
     expect(penandaXp(20, { ...awal, xpMasihAda: false })).toBeNull();
   });
 });
+
+test('soal tanpa XP (bobot 0, soal bank) tidak memberi penanda, juga saat petunjuk dibuka', () => {
+  expect(penandaXp(0, { xpMasihAda: true, xpHangus: true, petunjuk: true, salah: 0 })).toBeNull();
+});

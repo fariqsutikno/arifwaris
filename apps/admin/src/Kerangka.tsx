@@ -7,8 +7,9 @@
 // (editor/ajuanSaya.ts; penulis & admin). Kepala menampilkan judul halaman aktif.
 import { NAMA_APLIKASI } from '@waris/web/terjemah';
 import { useEffect, useState, type ReactNode } from 'react';
-import { transisiRevisi, type JenisKonten, type StatusRevisi } from '@waris/content';
-import { House, Inbox, LogOut, Menu as IkonMenu, Send, Users, type LucideIcon } from 'lucide-react';
+import { type JenisKonten, type StatusRevisi, bisaMenulis } from '@waris/content';
+import { adaYangBisaDilakukan } from './editor/soalKuisReview';
+import { House, Inbox, LogOut, Menu as IkonMenu, Send, ShieldCheck, Users, type LucideIcon } from 'lucide-react';
 import { bacaTerakhirDibuka, jumlahKabarBaru, susunAjuan } from './editor/ajuanSaya';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,13 +20,13 @@ import { MENU_PORTAL, menuUntukJenis, type GrupMenu, type KunciMenu } from './na
 import { usePortal } from './repo';
 import { tulisRute, type Rute } from './rute';
 
-type KunciAktif = 'beranda' | 'review' | 'ajuan' | 'peran' | KunciMenu | null;
+type KunciAktif = 'beranda' | 'review' | 'ajuan' | 'peran' | 'aturan' | KunciMenu | null;
 const URUTAN_GRUP: GrupMenu[] = ['Belajar', 'Bank soal', 'Tanya jawab', 'Pustaka', 'Aplikasi'];
-const LABEL_PERAN = { admin: 'Admin', penulis: 'Penulis', reviewer: 'Reviewer' } as const;
+const LABEL_PERAN = { admin: 'Admin', penulis: 'Penulis', reviewer: 'Reviewer', keilmuan: 'Keilmuan' } as const;
 
 export function menuAktif(rute: Rute, jenisEntri: JenisKonten | null): KunciAktif {
   switch (rute.layar) {
-    case 'beranda': case 'review': case 'ajuan': case 'peran': return rute.layar;
+    case 'beranda': case 'review': case 'ajuan': case 'peran': case 'aturan': return rute.layar;
     case 'menu': return rute.menu;
     case 'entriBaru': return menuUntukJenis(rute.jenis).kunci;
     case 'entri': return jenisEntri ? menuUntukJenis(jenisEntri).kunci : null;
@@ -58,7 +59,7 @@ function KepalaPortal({ judul }: { judul: string }) {
   );
 }
 
-const JUDUL_TETAP = { beranda: 'Beranda', review: 'Antrean review', ajuan: 'Ajuan saya', peran: 'Peran' } as const;
+const JUDUL_TETAP = { beranda: 'Beranda', review: 'Antrean review', ajuan: 'Ajuan saya', peran: 'Peran', aturan: 'Aturan pengecoh' } as const;
 function judulHalaman(aktif: KunciAktif): string {
   if (!aktif) return '';
   if (aktif in JUDUL_TETAP) return JUDUL_TETAP[aktif as keyof typeof JUDUL_TETAP];
@@ -69,11 +70,11 @@ function judulHalaman(aktif: KunciAktif): string {
 function SisiPortal({ rute, jenisEntri, onKeluar }: { rute: Rute; jenisEntri: JenisKonten | null; onKeluar: () => void }) {
   const { repo, sesi, peran } = usePortal();
   const { setOpenMobile } = useSidebar();
-  const bolehPeriksa = (revisi: { dibuatOleh: string; status: StatusRevisi }) =>
-    transisiRevisi({ peran, pelakuId: sesi.userId, pembuatId: revisi.dibuatOleh, status: revisi.status, aksi: 'setujui' }).ok;
+  const bolehPeriksa = (revisi: { dibuatOleh: string; status: StatusRevisi; hapus?: boolean; jenis?: string }) =>
+    adaYangBisaDilakukan(peran, sesi.userId, revisi);
   const [jumlahAntrean, setJumlahAntrean] = useState(0);
   const [kabarBaru, setKabarBaru] = useState(0);
-  const menulis = peran !== 'reviewer';
+  const menulis = bisaMenulis(peran);
 
   useEffect(() => {
     let dibatalkan = false;
@@ -127,6 +128,9 @@ function SisiPortal({ rute, jenisEntri, onKeluar }: { rute: Rute; jenisEntri: Je
               </SidebarMenu>
             </SidebarGroup>
           ))}
+          {peran === 'admin' || peran === 'keilmuan' ? (
+            <SidebarGroup><SidebarMenu>{tautan('aturan', tulisRute({ layar: 'aturan' }), ShieldCheck, 'Aturan pengecoh')}</SidebarMenu></SidebarGroup>
+          ) : null}
           {peran === 'admin' ? (
             <SidebarGroup><SidebarMenu>{tautan('peran', tulisRute({ layar: 'peran' }), Users, 'Peran')}</SidebarMenu></SidebarGroup>
           ) : null}

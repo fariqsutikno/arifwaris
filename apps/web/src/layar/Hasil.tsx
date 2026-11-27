@@ -5,6 +5,7 @@
 // Kaki bingkai: catatan + tautan Ubah data · Reset skenario. Semua angka dari engine lewat ringkas().
 // PERLU_INPUT / TIDAK_DIDUKUNG / galat → kartu pesan, tanpa hasil setengah jadi.
 
+import { adalahSoalBank } from '../bank/soalBank';
 import { useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react';
 import { hitungSisaHak, type IdOrang, type KunciAhliWaris, type Ruleset } from '@waris/engine';
 import { TAUTAN_LAPORAN } from '../konten/umum';
@@ -93,7 +94,7 @@ interface Props {
   hanyaBaca?: boolean | undefined;
   /** Ada = "Bagikan tautan" tampil di lembar Bagikan (hanya untuk pengguna yang sudah masuk). */
   bagikan?: RepositoriBagikan | undefined;
-  /** Posisi soal di daftar Latihan untuk hero soal (B8); `saatBerikutnya` kosong = soal terakhir. */
+  /** Posisi soal di daftar Latihan untuk hero soal (B8); `saatBerikutnya` kosong = soal terakhir; `jumlah` 0 = soal di luar daftar (bank), tanpa nomor. */
   urutanLatihan?: { nomor: number; jumlah: number; bab: string; judul: string; saatBerikutnya?: (() => void) | undefined } | undefined;
   /** Hasil soal selesai atau contoh materi: bisa disalin jadi kasus sendiri; soal selesai juga bisa dikerjakan ulang. */
   salinan?: { saatJadikanKasus: () => void; saatKerjakanUlang?: (() => void) | undefined; soal: boolean } | undefined;
@@ -315,7 +316,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   // Tanpa `soal` (kasus sendiri di mode belajar) tidak ada XP yang dipertaruhkan: tangga tetap ada, tanpa dialog hangus dan penanda XP.
   const bantuanTabel: BantuanTabel | undefined = adaTabelSoal ? {
     konteks: konteksDariTampil(tampil),
-    xp: { bobot: soal?.bobotXp ?? 0, masihAda: !!soal && !bacaProgresLatihan('hitung')[soal.id], hangus: xpHangus },
+    // Soal bank belum mendapat XP server (percobaannya hanya tercatat lokal), jadi tidak menjanjikan XP.
+    xp: soal && adalahSoalBank(soal.id) ? { bobot: 0, masihAda: false, hangus: false } : { bobot: soal?.bobotXp ?? 0, masihAda: !!soal && !bacaProgresLatihan('hitung')[soal.id], hangus: xpHangus },
     saatPetunjuk: (idKolom, tingkat) => { bantuanPercobaan.current.petunjuk = true; catat('petunjuk', { bantuan: { idKolom, tingkat } }); },
     saatBukaKolom: idKolom => {
       bantuanPercobaan.current.dibuka += 1;
@@ -394,7 +396,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
             ? <p className="lok-hero">{sedangMenebak ? t('hitung.soal') : t('hitung.pembahasan')}</p>
             : bolehUbah ? <button type="button" className="tautan-hero" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: TOTAL_LANGKAH })}><Ikon nama="kembali" ukuran={18} />{t('hitung.langkah_periksa')}</button> : <span />}
           {adalahBelajar && urutanLatihan && adaTabelSoal && (
-            <span className="lok-hero">{t('umum.soal_nomor_dari_total', { nomor: angka(String(urutanLatihan.nomor)), total: angka(String(urutanLatihan.jumlah)) })} · {urutanLatihan.bab}{madzhab !== 'syafii' && ` · ${namaMadzhab(madzhab)}`}</span>
+            <span className="lok-hero">{urutanLatihan.jumlah > 0 && <>{t('umum.soal_nomor_dari_total', { nomor: angka(String(urutanLatihan.nomor)), total: angka(String(urutanLatihan.jumlah)) })} · </>}{urutanLatihan.bab}{madzhab !== 'syafii' && ` · ${namaMadzhab(madzhab)}`}</span>
           )}
           {!adalahBelajar && (
             <div className="kanan-bilah">

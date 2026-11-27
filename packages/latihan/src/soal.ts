@@ -6,9 +6,12 @@
 import type { KasusSoal } from '@waris/content';
 import type { KunciAhliWaris } from '@waris/engine';
 import { tambahAhliWaris } from './grafAhliWaris.js';
+import { adalahKodeGenerator } from './bank/kodeSoal.js';
+import { REVISI_SOAL_BANK } from './bank/soalBank.js';
+import { soalDariKode } from './bank/soalDariKode.js';
 import { bacaBerkasKasus, kasusBaru, type Kasus } from './kasus.js';
 
-/** Soal kurasi = slug ('H-01'); soal pola = `${slugPola}@${versi}#${benih}` (fase P4b, belum didukung). */
+/** Soal kurasi = slug ('H-01'); soal pola = `${slugPola}@${versi}#${benih}` (fase P4b, belum didukung); soal bank = kode generator 'G1-B-...' (bank/kodeSoal). */
 export type IdSoal = string;
 
 /** Melempar GalatKasus bila berkas tidak sah, atau Error bila kunci ahli waris bukan ahli waris di checklist. */
@@ -26,19 +29,22 @@ export function kasusDariSoal(soal: KasusSoal): Kasus {
 
 export type IdSoalTerbaca =
   | { jenis: 'kurasi'; slug: string }
-  | { jenis: 'pola'; slugPola: string; versi: number; benih: number };
+  | { jenis: 'pola'; slugPola: string; versi: number; benih: number }
+  | { jenis: 'generator'; kode: string };
 
 const POLA_ID = /^([^@#\s]+)@(\d+)#(\d+)$/;
 const KURASI_ID = /^[^@#\s]+$/;
 
 export function bacaIdSoal(id: string): IdSoalTerbaca | null {
+  // Harus lebih dulu: kode generator lolos pola slug kurasi.
+  if (adalahKodeGenerator(id)) return { jenis: 'generator', kode: id };
   const pola = POLA_ID.exec(id);
   if (pola) return { jenis: 'pola', slugPola: pola[1]!, versi: Number(pola[2]), benih: Number(pola[3]) };
   return KURASI_ID.test(id) ? { jenis: 'kurasi', slug: id } : null;
 }
 
 export const tulisIdSoal = (id: IdSoalTerbaca): IdSoal =>
-  id.jenis === 'kurasi' ? id.slug : `${id.slugPola}@${id.versi}#${id.benih}`;
+  id.jenis === 'kurasi' ? id.slug : id.jenis === 'generator' ? id.kode : `${id.slugPola}@${id.versi}#${id.benih}`;
 
 export interface PencarianSoal { soal: (slug: string) => { kasus: KasusSoal; revisiId: string } | undefined }
 
@@ -46,11 +52,12 @@ export type HasilMuatSoal =
   | { ok: true; kasus: Kasus; revisiId: string }
   | { ok: false; alasan: 'TIDAK_ADA' | 'TIDAK_DIDUKUNG' };
 
-/** Soal pola → TIDAK_DIDUKUNG sampai fase P4b; kasus yang tak terbaca juga TIDAK_DIDUKUNG (bukan melempar). */
+/** Soal pola → TIDAK_DIDUKUNG sampai fase P4b; soal bank diurai dari kodenya (tanpa `cari`); kasus yang tak terbaca juga TIDAK_DIDUKUNG (bukan melempar). */
 export function muatSoal(id: IdSoal, cari: PencarianSoal): HasilMuatSoal {
   const terbaca = bacaIdSoal(id);
   if (!terbaca) return { ok: false, alasan: 'TIDAK_ADA' };
-  if (terbaca.jenis === 'pola') return { ok: false, alasan: 'TIDAK_DIDUKUNG' };
+  if (terbaca.jenis === 'generator') return muatSoalBank(terbaca.kode);
+  if (terbaca.jenis !== 'kurasi') return { ok: false, alasan: 'TIDAK_DIDUKUNG' };
   const ditemukan = cari.soal(terbaca.slug);
   if (!ditemukan) return { ok: false, alasan: 'TIDAK_ADA' };
   try {
@@ -58,4 +65,13 @@ export function muatSoal(id: IdSoal, cari: PencarianSoal): HasilMuatSoal {
   } catch {
     return { ok: false, alasan: 'TIDAK_DIDUKUNG' };
   }
+}
+
+const GALAT_KODE_TIDAK_ADA: ReadonlySet<string> = new Set(['BUKAN_KODE_GENERATOR', 'VERSI_TIDAK_DIKENAL', 'KELUARGA_TIDAK_DIKENAL', 'MUATAN_RUSAK', 'KASUS_TIDAK_SAH']);
+
+/** Kode yang tak bisa diurai = tak ada; kode sah yang engine-nya menolak = tidak didukung. */
+function muatSoalBank(kode: string): HasilMuatSoal {
+  const soal = soalDariKode(kode);
+  if (soal.ok) return { ok: true, kasus: { ...soal.kasus, jenisKasus: 'latihan' }, revisiId: REVISI_SOAL_BANK };
+  return { ok: false, alasan: GALAT_KODE_TIDAK_ADA.has(soal.galat) ? 'TIDAK_ADA' : 'TIDAK_DIDUKUNG' };
 }

@@ -52,6 +52,9 @@ export interface RepositoriKonten {
   daftarEntri(jenis?: JenisKonten): Promise<RingkasanEntri[]>;
   daftarRefs(): Promise<{ kode: string; bab: number }[]>;
 }
+/** Baris antrean review: revisi beserta jenis entrinya (soal kuis lewat dua tahap, jenis lain satu tahap). */
+export interface RevisiAntrean extends RingkasanRevisi { jenis: JenisKonten }
+
 export interface RepositoriEditorial {
   buatEntri(jenis: JenisKonten, slug: string, urutan: number): Promise<string>;
   /** Seret di portal: urutan = posisi * 10, tanpa revisi; semua id satu jenis. admin/penulis. */
@@ -60,10 +63,17 @@ export interface RepositoriEditorial {
   buatDraf<J extends JenisKonten>(entriId: string, jenis: J, isi: IsiKonten[J], refs: string[]): Promise<string>;
   ubahDraf<J extends JenisKonten>(revisiId: string, jenis: J, isi: IsiKonten[J], refs: string[]): Promise<void>;
   ajukan(revisiId: string): Promise<void>;
+  /** Tahap 1 soal kuis (diajukan → diperiksa): admin/reviewer, semua butir checklist harus sudah dicentang. */
+  periksa(revisiId: string): Promise<void>;
+  /** Centang atau cabut satu butir checklist (nomor 1..JUMLAH_BUTIR_CEKLIS) selagi revisi masih diajukan. */
+  aturCeklis(revisiId: string, butir: number, dicentang: boolean): Promise<void>;
+  /** Nomor butir yang sudah dicentang untuk revisi ini. */
+  daftarCeklis(revisiId: string): Promise<number[]>;
   setujui(revisiId: string): Promise<void>;
   kembalikan(revisiId: string, catatan: string): Promise<void>;
   terbitkanUlang(revisiId: string): Promise<void>;
-  antreanReview(): Promise<RingkasanRevisi[]>;
+  /** Revisi berstatus diajukan atau diperiksa; terlama dulu. Status terlihat di tiap baris. */
+  antreanReview(): Promise<RevisiAntrean[]>;
   /** Revisi buatan `userId` yang sudah dikirim (bukan draf), terbaru dulu, paling banyak BATAS_AJUAN_SAYA. */
   revisiSaya(userId: string): Promise<AjuanKonten[]>;
   /** Pembuat (atau admin) menarik kembali pengajuannya: diajukan → draf (pengajuan ke Sampah: ditutup). */

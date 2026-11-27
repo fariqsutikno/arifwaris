@@ -254,6 +254,9 @@ importers:
       '@waris/engine':
         specifier: workspace:*
         version: link:../engine
+      '@waris/explain':
+        specifier: workspace:*
+        version: link:../explain
       '@waris/math':
         specifier: workspace:*
         version: link:../math

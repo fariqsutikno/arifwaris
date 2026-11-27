@@ -339,3 +339,16 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
 .aksi-salinan{display:flex;flex-wrap:wrap;gap:4px 20px;margin:6px 0 0}
 .ubin-lab-soal .status-soal-baru{width:26px;height:26px}
 .penanda-ulang{font-weight:600;color:var(--ink)}
+
+/* Soal acak dari bank generator (tab Soal hitung) */
+.soal-bank{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:22px;border-radius:24px;background:var(--surface-raised);border:var(--border-w) solid var(--outline)}
+.soal-bank h2{display:flex;align-items:center;gap:10px;margin:0;font:600 20px/1.2 var(--font-display);letter-spacing:-.01em}
+.soal-bank .keterangan{margin:0;max-width:60ch}
+.pilihan-bank{display:flex;flex-wrap:wrap;gap:12px}
+.pilihan-bank label{display:flex;flex-direction:column;gap:6px;font:600 13px/1 var(--font-sans);color:var(--ink-muted)}
+.pilihan-bank select{height:44px;min-width:200px;max-width:100%;padding:0 12px;border-radius:var(--radius-md);border:var(--border-w) solid var(--outline);background:var(--surface-raised);color:var(--ink);font:600 15px var(--font-sans)}
+.status-bank{margin:0;min-height:1.4em;font-size:14.5px;line-height:1.4;color:var(--ink-muted)}
+@media (max-width:560px){
+  .soal-bank{padding:18px}
+  .pilihan-bank,.pilihan-bank label,.pilihan-bank select{width:100%}
+}

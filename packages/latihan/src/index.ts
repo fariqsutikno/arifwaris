@@ -19,3 +19,5 @@ export * from './petunjuk.js';
 export * from './namaKasus.js';
 export * from './indeksKontras.js';
 export * from './periksaAngkaMateri.js';
+export * from './bank/index.js';
+export * from './periksaAngkaSoal.js';
