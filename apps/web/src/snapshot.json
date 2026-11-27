@@ -30599,6 +30599,27 @@
    "id": "{kalah} lebih jauh daripada {kuat}, sehingga terhalang dan tidak menerima sisa. Sisa diambil kerabat yang lebih dekat.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.benar.akhir.aul",
+   "halaman": "soal_kuis",
+   "id": "Karena 'aul menaikkan penyebut dari {ashl} menjadi {aul}, bagian akhir {siapa} adalah {bagian}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.benar.akhir.radd",
+   "halaman": "soal_kuis",
+   "id": "Setelah radd penyebut menjadi {radd}, sehingga bagian akhir {siapa} adalah {bagian}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.benar.akhir.umum",
+   "halaman": "soal_kuis",
+   "id": "Jadi bagian akhir {siapa} secara keseluruhan adalah {bagian} dari seluruh harta.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

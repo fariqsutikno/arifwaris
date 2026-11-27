@@ -228,6 +228,30 @@ describe('soal kuis dari kode (sapuan sampel)', () => {
     }
   });
 
+  test('soal bagian bila \'aul atau radd: alasan benar menyebut perubahan dan pecahan akhir; pembahasan ditutup pecahan yang sama, langkah berpemisah', () => {
+    let diperiksa = 0;
+    for (const dasar of sapuKasusBiasa(30_000)) {
+      const analisis = analisisKasus(dasar);
+      if (!analisis.ok || (analisis.fakta.aul === undefined && analisis.fakta.radd === undefined)) continue;
+      for (const tanya of daftarPertanyaan(analisis.fakta).filter(isi => isi.jenis === 'bagian')) {
+        const kode = buatKodeKuis(dasar, tanya);
+        if (!rakitPilihan(kode, analisis.fakta, tanya)) continue;
+        const hasil = soalKuisDariKode(kode, penyusun);
+        if (!hasil.ok) throw new Error(kode);
+        const { soal } = hasil;
+        const pecahan = teksPilihan(soal.pilihan[soal.indeksBenar] as never);
+        const alasan = teksPilihan(soal.alasanPilihan![soal.indeksBenar] as never);
+        const pembahasan = teksPilihan(soal.pembahasan as never);
+        expect(alasan, kode).toContain(`adalah ${pecahan}.`);
+        expect(alasan, kode).toMatch(analisis.fakta.aul !== undefined ? /'aul menaikkan penyebut/ : /radd penyebut menjadi/);
+        expect(pembahasan, kode).toContain(`adalah ${pecahan}.`);
+        expect(pembahasan, kode).not.toMatch(/[a-z)] [A-Z][a-z]+: /); // langkah narasi tak lagi menempel tanpa titik
+        if (++diperiksa >= 40) return;
+      }
+    }
+    expect(diperiksa).toBeGreaterThan(0);
+  });
+
   test('deterministik: kode yang sama menghasilkan soal yang sama', () => {
     for (const baris of sampel.terpilih.slice(0, 30)) expect(soalKuisDariKode(baris.kode, penyusun)).toEqual(soalKuisDariKode(baris.kode, penyusun));
   });

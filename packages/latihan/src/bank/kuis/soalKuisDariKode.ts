@@ -9,7 +9,7 @@ import { URUTAN_KUNCI } from '../kodeBiasa.js';
 import type { KodeGalatSoal } from '../kodeBiasa.js';
 import { ATURAN_PENGECOH, type AturanPengecoh, type BahanAlasan } from './aturanPengecoh.js';
 import { analisisKasus, tingkatKuis, type AnalisisKasus } from './analisis.js';
-import { daftarPertanyaan, kunciAshabah, type FaktaKasus, type Jawaban } from './fakta.js';
+import { daftarPertanyaan, jawabanBenar, kunciAshabah, kunciJawaban, type FaktaKasus, type Jawaban } from './fakta.js';
 import { uraiKodeKuis, type JenisPertanyaan, type PertanyaanKuis } from './kodeKuis.js';
 import { rakitPilihan } from './rakitPilihan.js';
 
@@ -136,22 +136,34 @@ function narasiBenar(penyusun: Penyusun, analisis: Extract<AnalisisKasus, { ok: 
   const idOrang = fakta.idPerKunci[kunciSasaran]![0]!;
   const orang = jelaskanOrang(hasil, kasus.graf, idOrang, { kamus: penyusun.kamus });
   const siapa = namaKunci(penyusun, kunciSasaran);
+  const penutup = tanya.jenis === 'bagian' ? kalimatPenutup(penyusun, fakta, tanya.kunci) : undefined;
   if (!orang) {
     const kunciTemplat = { bagian: 'soal_kuis.benar.bagian', gugur: 'soal_kuis.benar.gugur', ashabah: 'soal_kuis.benar.ashabah' }[tanya.jenis];
     const sisipan = tanya.jenis === 'gugur' ? { mahjub: siapa, hajib: gabungNama(penyusun, fakta.mahjub[0]!.hajib.map(kunci => namaKunci(penyusun, kunci))) } : { siapa };
     const kalimat = teksKamus(penyusun, kunciTemplat, sisipan);
-    return { alasan: kalimat, pembahasan: kalimat, refs: [] };
+    return { alasan: [kalimat, penutup?.aulRadd].filter(Boolean).join(' '), pembahasan: [kalimat, penutup?.akhir].filter(Boolean).join(' '), refs: [] };
   }
   const baris = [...orang.dasar, ...orang.keluarga];
-  const teksBaris = (daftar: typeof baris) => daftar.map(isi => isi.daftarPotongan.map(potongan => potongan.teks).join('')).join(' ');
-  // Soal tidak menyebut jumlah harta, jadi baris rupiah dari narasi engine tidak ikut.
-  const labelRupiah = teksKamus(penyusun, 'narasi.langkah.orang.label.rupiah');
-  const hitungan = orang.hitungan.filter(isi => isi.label !== labelRupiah).map(isi => `${isi.label}: ${isi.isi.map(potongan => potongan.teks).join('')}`).join(' ');
+  const teksBaris = (daftar: typeof baris) => daftar.map(isi => akhiriKalimat(isi.daftarPotongan.map(potongan => potongan.teks).join(''))).join(' ');
+  // Soal tidak menyebut jumlah harta dan menanyakan bagian kelompok, jadi baris rupiah dan "bagian per orang" tidak ikut; penutup menggantikannya.
+  const labelDibuang = ['rupiah', 'bagian'].map(nama => teksKamus(penyusun, `narasi.langkah.orang.label.${nama}`));
+  const hitungan = orang.hitungan.filter(isi => !labelDibuang.includes(isi.label))
+    .map(isi => akhiriKalimat(`${isi.label}: ${isi.isi.map(potongan => potongan.teks).join('')}`)).join(' ');
   return {
-    alasan: teksBaris(orang.keluarga.length > 0 ? orang.keluarga : orang.dasar),
-    pembahasan: [teksBaris(baris), hitungan].filter(Boolean).join(' '),
+    alasan: [teksBaris(orang.keluarga.length > 0 ? orang.keluarga : orang.dasar), penutup?.aulRadd].filter(Boolean).join(' '),
+    pembahasan: [teksBaris(baris), hitungan, penutup?.akhir].filter(Boolean).join(' '),
     refs: [...new Set(baris.flatMap(isi => isi.refs))],
   };
+}
+
+const akhiriKalimat = (teks: string) => (/[.!?]$/.test(teks) ? teks : `${teks}.`);
+
+/** Kalimat penutup bagian akhir kelompok: `aulRadd` hanya bila 'aul/radd mengubah angkanya (untuk alasan), `akhir` selalu (untuk pembahasan). */
+function kalimatPenutup(penyusun: Penyusun, fakta: FaktaKasus, kunci: KunciAhliWaris): { aulRadd: string | undefined; akhir: string } {
+  const sisipan = { siapa: namaKunci(penyusun, kunci), bagian: kunciJawaban(jawabanBenar(fakta, { jenis: 'bagian', kunci })) };
+  const aulRadd = fakta.aul !== undefined ? teksKamus(penyusun, 'soal_kuis.benar.akhir.aul', { ...sisipan, ashl: String(fakta.ashl), aul: String(fakta.aul) })
+    : fakta.radd !== undefined ? teksKamus(penyusun, 'soal_kuis.benar.akhir.radd', { ...sisipan, radd: String(fakta.radd) }) : undefined;
+  return { aulRadd, akhir: aulRadd ?? teksKamus(penyusun, 'soal_kuis.benar.akhir.umum', sisipan) };
 }
 
 /** Penyebut akhir bukan keputusan fikih tunggal: diceritakan dari tahap yang terjadi (ashl, 'aul, radd, tashih) [R09-1] [R09-3] [R09-4] [R09-7] [R10-2]. */
