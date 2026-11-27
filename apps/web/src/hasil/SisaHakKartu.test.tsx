@@ -1,7 +1,8 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { hitung, hitungTirkah, KONFIGURASI_BAWAAN, type InputEngine } from '@waris/engine';
+import { hitung, hitungSisaHak, hitungTirkah, KONFIGURASI_BAWAAN, type InputEngine } from '@waris/engine';
+import { useState } from 'react';
 import { afterEach, describe, expect, it } from 'vitest';
-import { SisaHakKartu } from './SisaHakKartu';
+import { SisaHakKartu, ubahDiterima } from './SisaHakKartu';
 
 afterEach(cleanup);
 
@@ -23,17 +24,23 @@ const masukan: InputEngine = {
 const hasil = hitung(masukan);
 const penerima = [{ id: 'H1', nama: 'Suami' }, { id: 'M1', nama: 'Ibu' }, { id: 'F1', nama: 'Ayah' }];
 
-const tampilkan = () => {
+const BERSIH = hitungTirkah(masukan.tirkah).bersih;
+
+// Meniru Hasil: Kasus.sudahDiterima di state induk, kartu hanya membaca/menulis lewat props.
+function Induk({ awal }: { awal?: Record<string, bigint> | undefined }) {
   if (hasil.status !== 'OK') throw new Error(hasil.status);
-  render(<SisaHakKartu hasil={hasil} bersih={hitungTirkah(masukan.tirkah).bersih} penerima={penerima} />);
-  fireEvent.click(screen.getByRole('button', { name: /Sudah ada yang menerima sebagian/ }));
-};
+  const [diterima, setDiterima] = useState<Record<string, bigint> | undefined>(awal);
+  const sudahDiterima = diterima ?? {};
+  return <SisaHakKartu sisa={hitungSisaHak(hasil, BERSIH, sudahDiterima)} sudahDiterima={sudahDiterima} penerima={penerima}
+    saatUbah={(id, jumlah) => setDiterima(ubahDiterima(diterima, id, jumlah))} />;
+}
+const bukaKartu = () => fireEvent.click(screen.getByRole('button', { name: /Sudah ada yang menerima sebagian/ }));
+const tampilkan = (awal?: Record<string, bigint>) => { render(<Induk awal={awal} />); bukaKartu(); };
 const isi = (nama: string, nilai: string) => fireEvent.change(screen.getByLabelText(nama), { target: { value: nilai } });
 
 describe('SisaHakKartu', () => {
   it('tertutup sampai tautan diketuk; tanpa isian = bagian apa adanya', () => {
-    if (hasil.status !== 'OK') throw new Error(hasil.status);
-    render(<SisaHakKartu hasil={hasil} bersih={120_000_000n} penerima={penerima} />);
+    render(<Induk />);
     expect(screen.queryByRole('table')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: /Sudah ada yang menerima sebagian/ }));
     expect(screen.getByRole('table')).toBeTruthy();
@@ -63,5 +70,23 @@ describe('SisaHakKartu', () => {
     isi('Ibu', '30000000');
     expect(screen.getByRole('alert').textContent).toMatch(/melebihi tirkah/);
     expect(screen.queryByRole('table')).toBeNull();
+  });
+
+  it('isian terbawa dari kasus (muat ulang / ganti madzhab = kartu dibangun ulang dengan isian yang sama)', () => {
+    tampilkan({ H1: 30_000_000n });
+    expect((screen.getByLabelText('Suami') as HTMLInputElement).value).toBe('30.000.000');
+    expect(screen.getByText(/Harta yang masih ada untuk dibagi: Rp 90\.000\.000/)).toBeTruthy();
+  });
+
+  it('mengosongkan isian membuangnya dari kasus', () => {
+    tampilkan({ H1: 30_000_000n });
+    isi('Suami', '');
+    expect(screen.getByText(/Harta yang masih ada untuk dibagi: Rp 120\.000\.000/)).toBeTruthy();
+  });
+
+  it('ubahDiterima: buang isian kosong, bidang hilang bila tak ada isian', () => {
+    expect(ubahDiterima(undefined, 'A', 5n)).toEqual({ A: 5n });
+    expect(ubahDiterima({ A: 5n, B: 1n }, 'A', 0n)).toEqual({ B: 1n });
+    expect(ubahDiterima({ A: 5n }, 'A', 0n)).toBeUndefined();
   });
 });

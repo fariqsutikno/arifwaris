@@ -6,6 +6,7 @@
 import type { AlasanFardh, PilihanJadd, IdOrang, KodeKhilafOverlay, Ruleset, TujuanSisa } from '@waris/engine';
 import { sebutKelompok, sebutSemua, type Konteks, type Langkah } from './context.js';
 import { rupiah } from './format.js';
+import { babSisaHakDariKonteks } from './sisaHak.js';
 import {
   barisSkrip, denganHitungan, gabungDan, buatBaris, kalimat, susun, teksKamus, tekankan, type BarisPenjelasan, type Penyusun, type Potongan, type Sisipan,
 } from './segments.js';
@@ -16,7 +17,7 @@ export type KolomBab = 'ahliWaris' | 'bagian' | 'ashl' | 'penyesuaian' | 'tashih
 export interface Bab { judul: string; daftarBaris: BarisPenjelasan[]; kolom?: KolomBab }
 
 export function babCerita(konteks: Konteks): Bab[] {
-  return [babHarta, babAhliWaris, babBagian, babPenyebut, babPenyesuaian, babPembulatan, babHasil]
+  return [babHarta, babAhliWaris, babBagian, babPenyebut, babPenyesuaian, babPembulatan, babSisaHakDariKonteks, babHasil]
     .map(buatBab => buatBab(konteks))
     .filter((bab): bab is Bab => bab !== undefined);
 }

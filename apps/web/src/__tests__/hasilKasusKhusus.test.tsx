@@ -5,6 +5,8 @@ import { kasusBaru, type Kasus } from '../kasus';
 import { jalankan } from '@waris/latihan';
 import { terapkanKeadaan } from '../keadaanOrang';
 import { Hasil } from '../layar/Hasil';
+import { daftarBabDari } from '../layar/Penjelasan';
+import { hitungSisaHak } from '@waris/engine';
 
 function dengan(ubah: (k: Kasus, anak: string) => Kasus): Kasus {
   let kasus: Kasus = { ...kasusBaru('L'), tirkah: { kotor: 1_200_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n } };
@@ -88,5 +90,30 @@ describe('hasil kasus khusus (kerangka Hasil v6)', () => {
     const mode = jalankanLangkah(bersamaan('serentak'), 's-ldl-gharqa');
     expect(mode.querySelector('.kotak-harta')).toBeTruthy();
     fireEvent.click(within(mode).getByRole('button', { name: 'Selesai' }));
+  });
+  describe('kartu sisa hak (7b) hanya untuk kasus biasa/munasakhat, tidak untuk taqdir dan gharqa', () => {
+    const TAUTAN = 'Sudah ada yang menerima sebagian?';
+    const denganIsian = (k: Kasus): Kasus => ({ ...k, sudahDiterima: { [Object.keys(k.graf.orang).find(id => id !== 'PEWARIS')!]: 1_000n } });
+    const tanpaKartu = (kasus: Kasus) => {
+      render(<Hasil kasus={kasus} idSesi="s" tujuan="hitung" kirim={() => {}} />);
+      expect(screen.queryByText(TAUTAN)).toBeNull();
+    };
+    it('kontrol: kasus biasa memunculkan kartu', () => {
+      render(<Hasil kasus={dengan(k => k)} idSesi="s" tujuan="hitung" kirim={() => {}} />);
+      expect(screen.getByText(TAUTAN)).toBeTruthy();
+    });
+    it('jejak SISA_HAK masuk penjelasan hanya bila diberikan caller (kasus punya sudahDiterima)', () => {
+      const kasus = dengan(k => k);
+      const tampil = jalankan(kasus);
+      if (tampil.jenis !== 'biasa' || tampil.hasil.status !== 'OK') throw new Error('bukan kasus biasa OK');
+      const sisa = hitungSisaHak(tampil.hasil, 1_200_000n, { [Object.keys(tampil.hasil.tabel.baris[0]!.perOrang)[0]!]: 1_000n });
+      if (sisa.status !== 'OK') throw new Error(sisa.status);
+      const judul = (jejak: typeof sisa.jejak) => daftarBabDari(kasus, tampil, 'id', jejak).map(({ bab }) => bab.judul);
+      expect(judul(sisa.jejak).some(teks => teks.endsWith('Sisa bagian setelah penerimaan di muka'))).toBe(true);
+      expect(judul([]).some(teks => teks.endsWith('Sisa bagian setelah penerimaan di muka'))).toBe(false);
+    });
+    it('taqdir (hilang)', () => tanpaKartu(denganIsian(dengan((k, anak) => terapkanKeadaan(k, anak, { jenis: 'hilang' })))));
+    it('gharqa serentak', () => tanpaKartu(denganIsian(bersamaan('serentak'))));
+    it('gharqa terlupakan', () => tanpaKartu(denganIsian(bersamaan('terlupakan'))));
   });
 });

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { tambahAhliWaris, hitungIsian, kurangiAhliWaris } from '../checklist';
+import { bacaBerkasKasus } from '@waris/latihan';
 import { dariJson, kasusBaru, keJson, keJsonDibagikan, rapikanKeadaan, type Kasus } from '../kasus';
 
 describe('kasus', () => {
@@ -7,6 +8,39 @@ describe('kasus', () => {
     const kasus = { ...kasusBaru('L'), tirkah: { kotor: 123456789012345678901n, tajhiz: 5n, hutang: 0n, wasiat: 1n }, satuanPembulatan: 1000n };
     const hasil = dariJson(keJson(kasus));
     expect(hasil).toEqual({ berhasil: true, kasus });
+  });
+
+  it('sudahDiterima: bolak-balik, bigint besar terjaga, tanpa bidang = tanpa bidang', () => {
+    let kasus = kasusBaru('L');
+    kasus = { ...kasus, graf: tambahAhliWaris(kasus.graf, 'PEWARIS', 'ANAK_LK') };
+    const [idAnak] = hitungIsian(kasus.graf, 'PEWARIS').ANAK_LK!;
+    const dengan = { ...kasus, sudahDiterima: { [idAnak!]: 123456789012345678901n } };
+    expect(dariJson(keJson(dengan))).toEqual({ berhasil: true, kasus: dengan });
+    const tanpa = dariJson(keJson(kasus));
+    expect(tanpa).toEqual({ berhasil: true, kasus });
+    expect(keJson(kasus)).not.toContain('sudahDiterima');
+  });
+
+  it('sudahDiterima: ID tak dikenal, negatif, bukan digit ditolak; nilai 0 dibuang', () => {
+    let kasus = kasusBaru('L');
+    kasus = { ...kasus, graf: tambahAhliWaris(kasus.graf, 'PEWARIS', 'ANAK_LK') };
+    const [idAnak] = hitungIsian(kasus.graf, 'PEWARIS').ANAK_LK!;
+    const baca = (isi: unknown) => bacaBerkasKasus(JSON.stringify({ ...JSON.parse(keJson(kasus)), sudahDiterima: isi }));
+    expect(baca({ HANTU: '5' })).toMatchObject({ berhasil: false, galat: { kode: 'DATA_KEADAAN_RUSAK' } });
+    expect(baca({ [idAnak!]: '-5' })).toMatchObject({ berhasil: false, galat: { kode: 'NILAI_BUKAN_BULAT' } });
+    expect(baca({ [idAnak!]: '1.5' })).toMatchObject({ berhasil: false });
+    expect(baca({ [idAnak!]: 5 })).toMatchObject({ berhasil: false });
+    expect(baca([])).toMatchObject({ berhasil: false });
+    expect(baca({ [idAnak!]: '0' })).toEqual({ berhasil: true, kasus });
+  });
+
+  it('sudahDiterima: dibuang saat orang dihapus atau almarhum', () => {
+    let kasus = kasusBaru('L');
+    kasus = { ...kasus, graf: tambahAhliWaris(kasus.graf, 'PEWARIS', 'ANAK_LK') };
+    const [idAnak] = hitungIsian(kasus.graf, 'PEWARIS').ANAK_LK!;
+    const dengan = { ...kasus, sudahDiterima: { [idAnak!]: 5n, HANTU: 9n, PEWARIS: 1n } };
+    expect(rapikanKeadaan(dengan).sudahDiterima).toEqual({ [idAnak!]: 5n });
+    expect(rapikanKeadaan({ ...dengan, graf: kasusBaru('L').graf })).not.toHaveProperty('sudahDiterima');
   });
 
   it('menolak JSON rusak', () => {

@@ -67,6 +67,8 @@ export interface Kasus {
   /** Orang di urutanWafat yang posisinya sudah dipastikan (berpasangan/diatur). Khusus UI. */
   urutanDijawab?: IdOrang[];
   belumPasti?: HalBelumPasti[];
+  /** Bagian warisan di muka yang sudah diterima per ahli waris, satuan terkecil, hanya nilai > 0 (spec 7b bagian 6; bab 11.3). */
+  sudahDiterima?: Record<IdOrang, bigint>;
 }
 
 export function kasusBaru(jenisKelaminPewaris: 'L' | 'P', jenisKasus: JenisKasus = 'nyata'): Kasus {
@@ -146,8 +148,12 @@ export function rapikanKeadaan(kasus: Kasus): Kasus {
   const urutanDijawab = (kasus.urutanDijawab ?? []).filter(id => diUrutan.has(id));
   const belumPasti = (kasus.belumPasti ?? []).filter(h => (h.jenis === 'urutan' ? diUrutan.has(h.a) && diUrutan.has(h.b) : ada(h.anak) && almarhum.has(h.almarhum)));
 
+  // Isian hanya berarti untuk orang yang masih ada dan bukan penghubung/almarhum; nilai 0 = belum menerima.
+  const sudahDiterima = Object.entries(kasus.sudahDiterima ?? {})
+    .filter(([id, jumlah]) => jumlah > 0n && orangNyata(id) && graf.orang[id]!.statusHidup !== 'wafat');
+
   const {
-    gharqa: _g, wafatSesudahDibagi: _w, dikandungSetelahWafat: _d, pilihanJanin: _p,
+    sudahDiterima: _sd, gharqa: _g, wafatSesudahDibagi: _w, dikandungSetelahWafat: _d, pilihanJanin: _p,
     kelompokDijawab: _kd, waktu: _wk, belumDiisi: _bd, saya: _s, peristiwa: _pe, urutanDijawab: _ud, belumPasti: _bp, ...inti
   } = kasus;
   return {
@@ -164,6 +170,7 @@ export function rapikanKeadaan(kasus: Kasus): Kasus {
     ...(peristiwa.length ? { peristiwa } : {}),
     ...(urutanDijawab.length ? { urutanDijawab } : {}),
     ...(belumPasti.length ? { belumPasti } : {}),
+    ...(sudahDiterima.length ? { sudahDiterima: Object.fromEntries(sudahDiterima) } : {}),
   };
 }
 
@@ -195,11 +202,12 @@ function bacaKasus(data: unknown): Kasus {
   const semuaDaftar = [...urutanWafat, ...(gharqa?.anggota.filter(id => id !== graf.idPewaris) ?? []), ...(wafatSesudahDibagi ?? [])];
   if (new Set(semuaDaftar).size !== semuaDaftar.length) throw new GalatKasus('ORANG_WAFAT_DUA_KALI');
   if (objek.nama !== undefined && typeof objek.nama !== 'string') throw new GalatKasus('DATA_KEADAAN_RUSAK');
+  const sudahDiterima = objek.sudahDiterima === undefined ? undefined : bacaSudahDiterima(objek.sudahDiterima, graf);
   const kasus: Kasus = {
     versi: 4, ...tambahanV4, graf, tirkah, satuanPembulatan, urutanWafat,
     ...(rincianHarta ? { rincianHarta } : {}), ...(gharqa ? { gharqa } : {}),
     ...(wafatSesudahDibagi ? { wafatSesudahDibagi } : {}), ...(dikandungSetelahWafat ? { dikandungSetelahWafat } : {}),
-    ...(pilihanJanin ? { pilihanJanin } : {}), ...(objek.nama ? { nama: objek.nama } : {}),
+    ...(pilihanJanin ? { pilihanJanin } : {}), ...(sudahDiterima ? { sudahDiterima } : {}), ...(objek.nama ? { nama: objek.nama } : {}),
   };
   return rapikanKeadaan(kasus);
 }
@@ -320,6 +328,16 @@ function bacaUrutanWafat(nilai: unknown, graf: GrafKeluarga): IdOrang[] {
   if (nilai.includes(graf.idPewaris)) throw new GalatKasus('PEWARIS_DI_DAFTAR_WAFAT');
   if (new Set(nilai).size !== nilai.length) throw new GalatKasus('ORANG_WAFAT_DUA_KALI');
   return nilai as IdOrang[];
+}
+
+function bacaSudahDiterima(nilai: unknown, graf: GrafKeluarga): Record<IdOrang, bigint> {
+  const isi = wajibObjek(nilai, 'sudah diterima');
+  const diterima: Record<IdOrang, bigint> = {};
+  for (const [id, jumlah] of Object.entries(isi)) {
+    if (!graf.orang[id]) throw new GalatKasus('DATA_KEADAAN_RUSAK');
+    diterima[id] = bacaUang(jumlah, 'sudah diterima');
+  }
+  return diterima;
 }
 
 function bacaRincianHarta(nilai: unknown): Partial<Record<KategoriHarta, bigint>> {

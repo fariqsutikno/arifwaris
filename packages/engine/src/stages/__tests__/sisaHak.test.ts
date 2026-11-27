@@ -31,6 +31,14 @@ describe('hitungSisaHak', () => {
     expect(sisa.kasKurang).toBe(false);
   });
 
+  test('memancarkan satu LangkahJejak sisa_hak (data, refs R11-5 + KH)', () => {
+    const { hasil, bersih } = kasusUmariyyah();
+    const sisa = hitungSisaHak(hasil, bersih, { H1: 30n * JUTA });
+    if (sisa.status !== 'OK') throw new Error(sisa.status);
+    const { perOrang, sisaKas, sisaLainnya, kelebihan, kasKurang } = sisa;
+    expect(sisa.jejak).toEqual([{ tahap: 'sisaHak', refs: ['R11-5', 'KH'], jenis: 'SISA_HAK', perOrang, sisaKas, sisaLainnya, kelebihan, kasKurang }]);
+  });
+
   test('tanpa sudahDiterima = nominal apa adanya', () => {
     const { hasil, bersih } = kasusUmariyyah();
     const sisa = hitungSisaHak(hasil, bersih, {});

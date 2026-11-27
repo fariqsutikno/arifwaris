@@ -3,7 +3,7 @@
 
 import { t } from '../terjemah';
 import { Fragment } from 'react';
-import type { IdOrang } from '@waris/engine';
+import type { IdOrang, LangkahJejak } from '@waris/engine';
 import { dalilUntuk } from '@waris/content';
 import { jelaskan, jelaskanGharqa, jelaskanMunasakhat, jelaskanTaqdir, type BabPenjelasan, type BarisPenjelasan } from '@waris/explain';
 import type { HasilTampil } from '@waris/latihan';
@@ -18,9 +18,10 @@ const HURUF_ARAB = /[\u0600-\u06FF]/;
 export interface BabBerjudul { judulBagian?: string; bab: BabPenjelasan }
 
 /** Bahasa 'ar' → penjelasan gaya kitab berbahasa Arab; munasakhat belum punya versi Arab, tetap Indonesia. */
-export function daftarBabDari(kasus: Kasus, tampil: HasilTampil, bahasa: Bahasa = 'id'): BabBerjudul[] {
+/** `jejakTambahan` = langkah jejak yang bukan milik engine utama (SISA_HAK, hanya bila kasus punya sudahDiterima); hanya untuk kasus biasa. */
+export function daftarBabDari(kasus: Kasus, tampil: HasilTampil, bahasa: Bahasa = 'id', jejakTambahan: LangkahJejak[] = []): BabBerjudul[] {
   if (tampil.jenis === 'biasa' && tampil.hasil.status === 'OK') {
-    return jelaskan(tampil.hasil, kasus.graf, { bahasa: bahasa === 'ar' ? 'ar' : 'id', kamus: kamusNarasi }).daftarBab.map(bab => ({ bab }));
+    return jelaskan({ ...tampil.hasil, jejak: [...tampil.hasil.jejak, ...jejakTambahan] }, kasus.graf, { bahasa: bahasa === 'ar' ? 'ar' : 'id', kamus: kamusNarasi }).daftarBab.map(bab => ({ bab }));
   }
   if (tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK') {
     return jelaskanMunasakhat(tampil.hasil, kasus.graf, { kamus: kamusNarasi }).daftarBagian

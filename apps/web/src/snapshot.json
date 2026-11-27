@@ -5216,76 +5216,6 @@
    "versiTerbit": 50
   },
   {
-   "entriId": "2787dee9-b61c-4ff5-939a-e210cf7f0917",
-   "jenis": "modul",
-   "slug": "11",
-   "urutan": 11,
-   "revisiId": "79c40462-3921-47ea-ab97-743d9aa7349c",
-   "isi": {
-    "nomor": 11,
-    "judul": "Munasakhat",
-    "ringkas": "Ahli waris wafat sebelum harta dibagi"
-   },
-   "refs": [],
-   "versiTerbit": 215
-  },
-  {
-   "entriId": "53807714-fb70-4bf9-ae23-daa245004396",
-   "jenis": "modul",
-   "slug": "12",
-   "urutan": 12,
-   "revisiId": "d59e0b47-55a9-4436-bb72-4122eb14afac",
-   "isi": {
-    "nomor": 12,
-    "judul": "Dzawil arham",
-    "ringkas": "Kerabat di luar ashabul furudh dan ashabah, dan metode tanzil"
-   },
-   "refs": [],
-   "versiTerbit": 216
-  },
-  {
-   "entriId": "02b4fa8e-2d60-47e5-a078-1ad04e56f3eb",
-   "jenis": "modul",
-   "slug": "13",
-   "urutan": 13,
-   "revisiId": "3b1f56f1-49eb-4236-98d8-95c04a24544c",
-   "isi": {
-    "nomor": 13,
-    "judul": "Prinsip ketidakpastian dan haml",
-    "ringkas": "Memperkirakan dan menahan bagian, janin dalam kandungan"
-   },
-   "refs": [],
-   "versiTerbit": 217
-  },
-  {
-   "entriId": "d80f108a-52b6-4f2a-bad4-cd448214ff2e",
-   "jenis": "modul",
-   "slug": "14",
-   "urutan": 14,
-   "revisiId": "b0fc5c12-2ade-4aca-8a6b-ce4c9583ccf0",
-   "isi": {
-    "nomor": 14,
-    "judul": "Mafqud, khuntsa, dan gharqa",
-    "ringkas": "Orang hilang, khuntsa, dan wafat bersamaan"
-   },
-   "refs": [],
-   "versiTerbit": 218
-  },
-  {
-   "entriId": "d319df0c-5bda-40b1-b705-c12bfe3c1cfa",
-   "jenis": "modul",
-   "slug": "15",
-   "urutan": 15,
-   "revisiId": "e923871d-2e27-4cb6-ac60-082950ca9af9",
-   "isi": {
-    "nomor": 15,
-    "judul": "Kasus khusus lain",
-    "ringkas": "Murtad, anak li'an dan anak zina, anak temuan"
-   },
-   "refs": [],
-   "versiTerbit": 219
-  },
-  {
    "entriId": "39b498f6-d719-4b78-ab11-8aa63920e92c",
    "jenis": "soal_hitung",
    "slug": "H-01",
@@ -8750,6 +8680,76 @@
    },
    "refs": [],
    "versiTerbit": 212
+  },
+  {
+   "entriId": "2787dee9-b61c-4ff5-939a-e210cf7f0917",
+   "jenis": "modul",
+   "slug": "11",
+   "urutan": 11,
+   "revisiId": "79c40462-3921-47ea-ab97-743d9aa7349c",
+   "isi": {
+    "nomor": 11,
+    "judul": "Munasakhat",
+    "ringkas": "Ahli waris wafat sebelum harta dibagi"
+   },
+   "refs": [],
+   "versiTerbit": 215
+  },
+  {
+   "entriId": "53807714-fb70-4bf9-ae23-daa245004396",
+   "jenis": "modul",
+   "slug": "12",
+   "urutan": 12,
+   "revisiId": "d59e0b47-55a9-4436-bb72-4122eb14afac",
+   "isi": {
+    "nomor": 12,
+    "judul": "Dzawil arham",
+    "ringkas": "Kerabat di luar ashabul furudh dan ashabah, dan metode tanzil"
+   },
+   "refs": [],
+   "versiTerbit": 216
+  },
+  {
+   "entriId": "02b4fa8e-2d60-47e5-a078-1ad04e56f3eb",
+   "jenis": "modul",
+   "slug": "13",
+   "urutan": 13,
+   "revisiId": "3b1f56f1-49eb-4236-98d8-95c04a24544c",
+   "isi": {
+    "nomor": 13,
+    "judul": "Prinsip ketidakpastian dan haml",
+    "ringkas": "Memperkirakan dan menahan bagian, janin dalam kandungan"
+   },
+   "refs": [],
+   "versiTerbit": 217
+  },
+  {
+   "entriId": "d80f108a-52b6-4f2a-bad4-cd448214ff2e",
+   "jenis": "modul",
+   "slug": "14",
+   "urutan": 14,
+   "revisiId": "b0fc5c12-2ade-4aca-8a6b-ce4c9583ccf0",
+   "isi": {
+    "nomor": 14,
+    "judul": "Mafqud, khuntsa, dan gharqa",
+    "ringkas": "Orang hilang, khuntsa, dan wafat bersamaan"
+   },
+   "refs": [],
+   "versiTerbit": 218
+  },
+  {
+   "entriId": "d319df0c-5bda-40b1-b705-c12bfe3c1cfa",
+   "jenis": "modul",
+   "slug": "15",
+   "urutan": 15,
+   "revisiId": "e923871d-2e27-4cb6-ac60-082950ca9af9",
+   "isi": {
+    "nomor": 15,
+    "judul": "Kasus khusus lain",
+    "ringkas": "Murtad, anak li'an dan anak zina, anak temuan"
+   },
+   "refs": [],
+   "versiTerbit": 219
   }
  ],
  "diksi": [
@@ -30324,6 +30324,132 @@
    "kunci": "belajar.kembali_ke_pelajaran",
    "halaman": "belajar",
    "id": "Kembali ke pelajaran",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.tautan",
+   "halaman": "hasil",
+   "id": "Ada ahli waris yang punya hutang ke almarhum?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.petunjuk",
+   "halaman": "hasil",
+   "id": "Isi hutang tiap ahli waris kepada almarhum. Jumlah harta di atas harus sudah termasuk piutang itu. Pembagian saham tidak berubah; yang dihitung ulang hanya uang yang diterima.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.label_hutang",
+   "halaman": "hasil",
+   "id": "Hutang {nama} ke almarhum",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.tanya_setuju",
+   "halaman": "hasil",
+   "id": "{nama} setuju hutangnya dipotong dari bagiannya?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.opsi_setuju",
+   "halaman": "hasil",
+   "id": "Setuju dipotong",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.opsi_menolak",
+   "halaman": "hasil",
+   "id": "Menolak mengakui, atau tidak mampu membayar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.opsi_tidak_setuju",
+   "halaman": "hasil",
+   "id": "Mengakui dan mampu membayar, tetapi tidak setuju",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.perlu_setuju",
+   "halaman": "hasil",
+   "id": "{nama}: pilih dulu apakah setuju hutangnya dipotong.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.galat_harta",
+   "halaman": "hasil",
+   "id": "Jumlah hutang melebihi harta yang dibagi. Periksa lagi angkanya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.keadaan_sama",
+   "halaman": "hasil",
+   "id": "Bagian {nama} ({bagian}) sama dengan hutangnya, jadi habis untuk melunasi hutang. {nama} tidak menerima apa pun dan tidak perlu membayar; barang dibagi atas saham yang lain.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.keadaan_lebih",
+   "halaman": "hasil",
+   "id": "Bagian {nama} ({bagian}) lebih besar dari hutangnya ({hutang}). Hutang dipotong dari bagiannya, sisanya {sisa} diambil dari barang.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.keadaan_kurang",
+   "halaman": "hasil",
+   "id": "Bagian {nama} ({bagian}) lebih kecil dari hutangnya ({hutang}). Seluruh bagiannya habis, dan {nama} masih harus membayar {kurang}, dibagikan ke ahli waris lain sesuai saham mereka. Barang dibagi atas saham yang lain.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.kolom_diterima",
+   "halaman": "hasil",
+   "id": "Uang diterima",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.kolom_membayar",
+   "halaman": "hasil",
+   "id": "Membayar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.sisa_hak.judul",
+   "halaman": "narasi",
+   "id": "Sisa bagian setelah penerimaan di muka",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.sisa_hak.ringkasan",
+   "halaman": "narasi",
+   "id": "Sebagian harta sudah diterima di muka, jadi bagian tiap orang dihitung dari sisanya. Harta yang masih dibagi: {sisa}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.sisa_hak.kelebihan",
+   "halaman": "narasi",
+   "id": "{nama} sudah menerima {diterima}, lebih dari bagiannya {bagian}. Kelebihan ini perlu disepakati keluarga atau ditanyakan ke pengadilan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.sisa_hak.kas_kurang",
+   "halaman": "narasi",
+   "id": "Harta yang tersisa tidak cukup untuk semua sisa bagian karena ada kelebihan di atas. Perlu disepakati keluarga atau ditanyakan ke pengadilan.",
    "ar": null,
    "versiTerbit": 873
   },

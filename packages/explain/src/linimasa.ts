@@ -9,11 +9,12 @@ import type { GrafKeluarga, IdOrang } from '@waris/engine';
 import { babAhliWaris, babBagian, babHarta, babHasil, babPembulatan, babPenyebut, babPenyesuaian, persamaanKotakAshl, type Bab } from './cerita.js';
 import { buatKonteks, type HasilOk, type Konteks } from './context.js';
 import { adaDzawilArham } from './dzawilArham.js';
+import { babSisaHakDariKonteks } from './sisaHak.js';
 import { susunLinimasaDzawilArham } from './linimasaDzawilArham.js';
 import { LAMA, babAhliWarisSkrip, babBagianSkrip, babHartaSkrip, babHasilSkrip, babPembulatanSkrip, babPenyebutSkrip, babPenyesuaianSkrip, langkahPeta, type HasilSkrip } from './skrip.js';
 import { papanDari, type BarisPenjelasan, type Hitungan, type JenisLangkah, type Kamus } from './segments.js';
 
-export type IdTahap = 'harta' | 'ahliWaris' | 'bagian' | 'ashl' | 'penyesuaian' | 'tashih' | 'hasil' | 'berantai' | 'menyambung' | 'hasilAkhir'
+export type IdTahap = 'harta' | 'ahliWaris' | 'bagian' | 'ashl' | 'penyesuaian' | 'tashih' | 'sisaHak' | 'hasil' | 'berantai' | 'menyambung' | 'hasilAkhir'
   | 'belumPasti' | 'kemungkinan' | 'pemberian' | 'wafatBersamaan' | 'dzawilArham';
 export type BagianLangkah = 'keluarga' | 'hitung';
 export type KolomLinimasa = 'bagian' | 'ashl' | 'aul' | 'radd' | 'tashih' | 'nominal';
@@ -76,6 +77,7 @@ export function tahapBiasa(konteks: Konteks, babak: number): Tahap[] {
     ['ashl', pilihBab(babPenyebutSkrip(konteks), () => babPenyebut(konteks))],
     ['penyesuaian', pilihBab(babPenyesuaianSkrip(konteks), () => babPenyesuaian(konteks))],
     ['tashih', pilihBab(babPembulatanSkrip(konteks), () => babPembulatan(konteks))],
+    ['sisaHak', babSisaHakDariKonteks(konteks)],
     ['hasil', pilihBab(babHasilSkrip(konteks), () => babHasil(konteks))],
   ];
   return daftarTahap.flatMap(([id, bab]) => (bab ? [{ ...susunTahap(konteks, id, bab), babak }] : []));

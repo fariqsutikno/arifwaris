@@ -7,7 +7,7 @@
 
 import { adalahSoalBank } from '../bank/soalBank';
 import { useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react';
-import type { IdOrang, KunciAhliWaris, Ruleset } from '@waris/engine';
+import { hitungSisaHak, type IdOrang, type KunciAhliWaris, type Ruleset } from '@waris/engine';
 import { TAUTAN_LAPORAN } from '../konten/umum';
 import type { RepositoriBagikan } from '@waris/data';
 import { acakDariBenih } from '../acakBerbenih';
@@ -23,7 +23,8 @@ import { DaftarAksi, UbinJenisMasalah, UbinSelanjutnya, UbinTentang } from '../h
 import { KartuLangkah } from '../hasil/KartuLangkah';
 import { dataPeranDari } from '../hasil/ketukan';
 import { KartuPembagian, type PengaturanTampil } from '../hasil/KartuPembagian';
-import { SisaHakKartu } from '../hasil/SisaHakKartu';
+import { PiutangKartu } from '../hasil/PiutangKartu';
+import { SisaHakKartu, ubahKasusDiterima } from '../hasil/SisaHakKartu';
 import { TabelLatihan } from '../hasil/TabelLatihan';
 import { GharqaLatihan } from '../hasil/GharqaLatihan';
 import { ModalOrang } from '../hasil/ModalOrang';
@@ -164,7 +165,6 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const ringkasan = useMemo(() => ringkas(kasus, tampil), [kasus, tampil]);
   const bahasa = useBahasa();
-  const daftarBab = useMemo(() => daftarBabDari(kasus, tampil, bahasa), [kasus, tampil, bahasa]);
   const tampilPembulatan = useMemo(() => adaTidakPas(kasus), [kasus]);
   // Mafqud punya tabel faraidh isian; haml, khuntsa, menunggu kelahiran, dan gharqa belum punya mode Belajar: selalu tampil sebagai hasil hitung.
   const taqdirBertabel = useMemo(() => tampil.jenis === 'taqdir' && !('status' in susunTabelSoal(tampil.hasil, id => id)), [tampil]);
@@ -252,6 +252,13 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   const umumKhusus = { graf: kasus.graf, ringkasan, sembunyiNominal, saatPilih: setOrangDipilih };
   const rantai = useMemo(() => (tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK'
     ? { hasil: tampil.hasil, langkah: rantaiMunasakhat(tampil.hasil, ringkasan.tirkah.bersih, kasus.satuanPembulatan) } : null), [tampil, ringkasan, kasus.satuanPembulatan]);
+  // Munasakhat: penyajian saja (KB 11.3, 12.3); nominal akhir per ahli waris sudah ada di ringkasan, tirkah = harta mayit pertama.
+  const sumberSisaHak = useMemo(() => hasilBiasa ?? (rantai ? { tabel: { baris: [{ perOrang: Object.fromEntries(ringkasan.penerima.map(orang => [orang.id, { nominal: orang.nominal }])) }] } } : null), [hasilBiasa, rantai, ringkasan.penerima]);
+  const sudahDiterima = useMemo(() => kasus.sudahDiterima ?? {}, [kasus.sudahDiterima]);
+  const sisaHak = useMemo(() => (sumberSisaHak ? hitungSisaHak(sumberSisaHak, ringkasan.tirkah.bersih, sudahDiterima) : null), [sumberSisaHak, ringkasan.tirkah.bersih, sudahDiterima]);
+  // Jejak sisa hak ikut ke Periksa hanya bila ada yang sudah menerima (tanpa isian = bagian apa adanya, tak ada yang diceritakan).
+  const jejakSisaHak = useMemo(() => (sisaHak?.status === 'OK' && Object.keys(sudahDiterima).length > 0 ? sisaHak.jejak : []), [sisaHak, sudahDiterima]);
+  const daftarBab = useMemo(() => daftarBabDari(kasus, tampil, bahasa, jejakSisaHak), [kasus, tampil, bahasa, jejakSisaHak]);
   const umumRantai = rantai && { graf: kasus.graf, ringkasan, rantai: rantai.langkah, sembunyiNominal, saatPilih: setOrangDipilih };
   const tabel = umumRantai && !sedangMenebak ? <TabelMunasakhatKitab {...umumRantai} nominal={rantai!.hasil.nominal} />
     : ringkasan.taqdir ? <TabelKemungkinan {...umumKhusus} />
@@ -337,7 +344,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
     try { return susunSemuaLinimasa(); } catch { return { linimasa: null, babakLinimasa: null }; } // gagal menyusun = pakai daftar lama, layar Hasil tetap hidup
     function susunSemuaLinimasa(): { linimasa: Linimasa | null; babakLinimasa: PeragaBabak[] | null } {
     if (sedangMenebak) return { linimasa: null, babakLinimasa: null };
-    if (hasilBiasa) return { linimasa: susunLinimasa(hasilBiasa, kasus.graf, { kamus: kamusNarasi }), babakLinimasa: adaDzawilArham ? [] : [{ hasil: hasilBiasa, ringkasan }] };
+    if (hasilBiasa) return { linimasa: susunLinimasa({ ...hasilBiasa, jejak: [...hasilBiasa.jejak, ...jejakSisaHak] }, kasus.graf, { kamus: kamusNarasi }), babakLinimasa: adaDzawilArham ? [] : [{ hasil: hasilBiasa, ringkasan }] };
     if (hasilMunasakhat) {
       return {
         linimasa: susunLinimasaMunasakhat(hasilMunasakhat, kasus.graf, { kamus: kamusNarasi }),
@@ -354,7 +361,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
     }
     return { linimasa: null, babakLinimasa: null };
     }
-  }, [tampil, hasilBiasa, hasilMunasakhat, kasus.gharqa, sedangMenebak, adaDzawilArham, kasus.graf, ringkasan]);
+  }, [tampil, hasilBiasa, hasilMunasakhat, kasus.gharqa, sedangMenebak, adaDzawilArham, kasus.graf, ringkasan, jejakSisaHak]);
   const dataPeran = useMemo(() => dataPeranDari(kasus.graf, ringkasan, hasilBiasa?.tabel ?? null, kasus.urutanWafat, hasilBiasa?.jejak), [kasus, ringkasan, hasilBiasa]);
 
   const kamu = kasus.saya ? ringkasan.penerima.find(orang => orang.id === kasus.saya) : undefined;
@@ -468,8 +475,12 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
             pembuka={umumRantai && <KotakYangDibagi graf={kasus.graf} ringkasan={ringkasan} />}
             kelompokTambahan={umumRantai ? <KelompokMeninggal {...umumRantai} />
               : ringkasan.ditahan && <KelompokDitahan ringkasan={ringkasan} judul={t('hasil.ditahan.ditahan')} saatPilih={setOrangDipilih} />} />}
+          {sisaHak && !hartaKosong && !menunggu && !gharqaDitahan && !adalahBelajar && (
+            <SisaHakKartu sisa={sisaHak!} sudahDiterima={sudahDiterima} penerima={ringkasan.penerima.map(({ id, nama }) => ({ id, nama }))}
+              saatUbah={(id, jumlah) => kirim({ jenis: 'UBAH_KASUS', ubah: k => ubahKasusDiterima(k, id, jumlah) })} />
+          )}
           {hasilBiasa && !hartaKosong && !menunggu && !gharqaDitahan && !adalahBelajar && (
-            <SisaHakKartu hasil={hasilBiasa} bersih={ringkasan.tirkah.bersih} penerima={ringkasan.penerima.map(({ id, nama }) => ({ id, nama }))} />
+            <PiutangKartu hasil={hasilBiasa} bersih={ringkasan.tirkah.bersih} penerima={ringkasan.penerima.map(({ id, nama }) => ({ id, nama }))} />
           )}
           {madzhab !== 'syafii' && <p className="catatan-madzhab">{t('hitung.madzhab_sumber_kitab', { nama: namaMadzhab(madzhab) })}</p>}
           {adalahBelajar && !sedangMenebak && (

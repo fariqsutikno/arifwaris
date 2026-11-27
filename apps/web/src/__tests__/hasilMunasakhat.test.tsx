@@ -65,4 +65,19 @@ describe('hasil munasakhat', () => {
     fireEvent.click(within(mode()).getByRole('button', { name: 'Selesai' }));
     expect(screen.queryByRole('dialog', { name: 'Langkah demi langkah' })).toBeNull();
   });
+
+  it('kartu sisa hak: tersedia, penerima = ahli waris akhir (bukan Budi yang wafat), tirkah awal, nominal tidak berubah', () => {
+    const kasus = kasusBerlapis();
+    const hasil = (jalankan(kasus) as { hasil: HasilMunasakhatOk }).hasil;
+    render(<Hasil kasus={kasus} idSesi="uji-munasakhat-sisa" tujuan="hitung" kirim={() => {}} />);
+    fireEvent.click(screen.getByRole('button', { name: /Sudah ada yang menerima sebagian/ }));
+    expect(screen.getByText(/Harta yang masih ada untuk dibagi: Rp 300\.000\.000/)).toBeTruthy();
+    const idBudi = kasus.urutanWafat[0]!;
+    const [idPenerima, nominal] = Object.entries(hasil.nominal).find(([id, uang]) => id !== idBudi && uang > 0n)!;
+    expect(hasil.nominal[idBudi] ?? 0n).toBe(0n);
+    const baris = screen.getAllByRole('row').filter(b => b.textContent!.includes(`Rp ${nominal.toLocaleString('id-ID')}`));
+    expect(baris.length).toBeGreaterThan(0);
+    expect(screen.queryByLabelText('Budi')).toBeNull();
+    expect(idPenerima).toBeTruthy();
+  });
 });
