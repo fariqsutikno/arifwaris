@@ -421,9 +421,11 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
             {keadaan.revisi.hapus
               ? <p className="text-sm text-muted-foreground">Diajukan ke Sampah. Bila disetujui, entri hilang dari web dan bisa dipulihkan kapan saja.</p>
               : <PanelPerubahan perubahan={perubahanRevisi(keadaan.revisi)} baru={!revisiTayang} />}
-            <AksiReview pembuatId={keadaan.revisi.dibuatOleh} status={keadaan.revisi.status}
-              setujui={() => repo.editorial.setujui(keadaan.revisi.id)} kembalikan={catatan => repo.editorial.kembalikan(keadaan.revisi.id, catatan)}
-              saatSelesai={() => setMuatUlang(n => n + 1)} />
+            {muatan.jenis === 'soal_kuis' && !keadaan.revisi.hapus
+              ? <p className="text-sm text-muted-foreground">Soal kuis diperiksa dua tahap lewat <a className="text-primary underline-offset-4 hover:underline" href={tulisRute({ layar: 'review' })}>Antrean review</a>.</p>
+              : <AksiReview pembuatId={keadaan.revisi.dibuatOleh} status={keadaan.revisi.status}
+                setujui={() => repo.editorial.setujui(keadaan.revisi.id)} kembalikan={catatan => repo.editorial.kembalikan(keadaan.revisi.id, catatan)}
+                saatSelesai={() => setMuatUlang(n => n + 1)} />}
           </CardContent>
         </Card>
       ) : null}

@@ -11,7 +11,7 @@ import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, us
 import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { ChevronDown, ChevronUp, Ellipsis, GripVertical, ListFilter, Plus, Search, X } from 'lucide-react';
-import { JUDUL_BAB, type JenisKonten } from '@waris/content';
+import { JUDUL_BAB, type JenisKonten, bisaMenulis } from '@waris/content';
 import type { RingkasanEntri } from '@waris/data';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -63,7 +63,7 @@ export function LayarMenu({ menu: kunci, tab, kueri }: { menu: KunciMenu; tab: I
         <p className="text-sm font-semibold text-muted-foreground">{menu.grup} /</p>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-2xl font-bold">{menu.label}</h1>
-          {peran !== 'reviewer' ? (
+          {bisaMenulis(peran) ? (
             <div className="flex gap-2">
               {jenisBaru.map(jenis => (
                 <Button key={jenis} size="sm" asChild><a href={tulisRute({ layar: 'entriBaru', jenis })}>+ {LABEL_ISI[jenis]} baru</a></Button>
@@ -246,7 +246,7 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
   // Angka tab mengikuti cari & saring lanjutan yang aktif, supaya sama dengan jumlah baris yang akan tampil.
   const jumlah = jumlahPerTab(saringTanpaStatus(daftar, saring, sesi.userId));
   const tampil = urutanDraf ?? terapkanSaring(daftar, saring, sesi.userId);
-  const bolehAturUrutan = peran !== 'reviewer' && saring.status !== 'sampah' && saring.status !== 'arsip' && daftar.length > 1;
+  const bolehAturUrutan = bisaMenulis(peran) && saring.status !== 'sampah' && saring.status !== 'arsip' && daftar.length > 1;
   const bolehPilih = tampil.length > 0;
   const aksiTersedia = aksiPeran(peran, saring.status);
   const dipilih = daftar.filter(entri => terpilih.has(entri.entriId));
@@ -255,7 +255,7 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
     sekarang: new Date(),
     namaPengguna,
     aksi: modeUrutan ? undefined : entri => (
-      <MenuBaris entri={entri} aksi={aksiTersedia.filter(aksi => bolehAksi(entri, aksi))} bacaSaja={peran === 'reviewer'}
+      <MenuBaris entri={entri} aksi={aksiTersedia.filter(aksi => bolehAksi(entri, aksi))} bacaSaja={!bisaMenulis(peran)}
         saatAksi={aksi => void jalankanMassal(aksi, [entri])} />
     ),
     pilih: !modePilih || modeUrutan ? null : {
@@ -356,7 +356,7 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
       {menuMateri
         ? kelompokkanPerModul(tampil, modul.filter(entri => !diSampah(entri)), isiModulTerbit).map(grup => (
           <GrupMateri key={grup.nomor ?? 'tanpa'} grup={grup} baris={baris} bolehSeret={modeUrutan} saatPindah={pindahLokal}
-            bolehBuat={peran !== 'reviewer' && !modeUrutan} />
+            bolehBuat={bisaMenulis(peran) && !modeUrutan} />
         ))
         : jenis === 'faq' && tampil.length > 0 ? (
           kelompokkanPerKelompok(tampil).map(([kelompok, anggota]) => (

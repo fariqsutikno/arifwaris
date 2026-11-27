@@ -26,7 +26,7 @@ export function statusTampil(entri: RingkasanEntri): StatusTampil {
   // Disetujui tapi bukan revisi terbit = sesudah rollback; yang menentukan tetap apa yang sedang terbit.
   if (revisiTerakhir.status === 'disetujui') return 'terbit';
   if (revisiTerbitId && revisiTerakhir.status === 'draf') return 'terbit + draf';
-  if (revisiTerakhir.status === 'diajukan') return 'diajukan';
+  if (revisiTerakhir.status === 'diajukan' || revisiTerakhir.status === 'diperiksa') return 'diajukan';
   if (revisiTerakhir.status === 'draf') return 'draf';
   return 'dikembalikan';
 }

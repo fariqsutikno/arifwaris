@@ -98,6 +98,17 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
       if ((baris as unknown[]).length === 0) throw new Error('draf ini tidak bisa disunting');
     },
     ajukan: revisiId => rpc('ajukan_revisi', { p_id: revisiId }),
+    periksa: revisiId => rpc('periksa_revisi', { p_id: revisiId }),
+    async aturCeklis(revisiId, butir, dicentang) {
+      if (dicentang) {
+        await hasil(klien.from('ceklis_review').upsert({ revisi_id: revisiId, butir }, { onConflict: 'revisi_id,butir', ignoreDuplicates: true }));
+      } else {
+        await hasil(klien.from('ceklis_review').delete().eq('revisi_id', revisiId).eq('butir', butir));
+      }
+    },
+    async daftarCeklis(revisiId) {
+      return (await hasil(klien.from('ceklis_review').select('butir').eq('revisi_id', revisiId).order('butir')) as { butir: number }[]).map(baris => baris.butir);
+    },
     setujui: revisiId => rpc('setujui_revisi', { p_id: revisiId }),
     kembalikan: (revisiId, catatan) => rpc('kembalikan_revisi', { p_id: revisiId, p_catatan: catatan }),
     terbitkanUlang: revisiId => rpc('terbitkan_ulang_revisi', { p_id: revisiId }),
@@ -111,8 +122,11 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
     pulihkanEntri: entriId => rpc('pulihkan_entri', { p_entri: entriId }),
     arsipkanEntri: (entriId, alasan) => rpc('arsipkan_entri', { p_entri: entriId, p_alasan: alasan ?? null }),
     keluarkanArsipEntri: entriId => rpc('keluarkan_arsip_entri', { p_entri: entriId }),
+    // Bisa ribuan soal kuis: dibaca per halaman (batas 1000 baris PostgREST), urutan tetap lewat id.
     async antreanReview() {
-      return (await hasil(klien.from('revisi').select('*').eq('status', 'diajukan').order('dibuat_pada')) as any[]).map(keRevisi);
+      const kueri = klien.from('revisi').select('*, entri:entri_konten!revisi_entri_id_fkey(jenis)').in('status', ['diajukan', 'diperiksa'])
+        .order('dibuat_pada').order('id');
+      return (await semuaBaris(kueri)).map(baris => ({ ...keRevisi(baris), jenis: baris.entri.jenis }));
     },
     async revisiSaya(userId) {
       const kueri = klien.from('revisi').select('*, entri:entri_konten!revisi_entri_id_fkey(jenis, slug)')

@@ -1,6 +1,6 @@
 // Isi konten kecil untuk tes layar admin, disalin dari packages/data/src/__tests__/contoh.ts (berkas tes paket
 // lain tidak diekspor sehingga tak bisa diimpor langsung). Task 4 boleh menambah data di sini.
-import { bacaIsi, type ContohKasus, type EntriFaq, type Pelajaran, type SoalHitung } from '@waris/content';
+import { bacaIsi, type ContohKasus, type EntriFaq, type Pelajaran, type SoalHitung, type SoalKuis } from '@waris/content';
 import snapshot from '../../../web/src/snapshot.json';
 
 export const DAFTAR_FAQ_UJI: EntriFaq[] = [
@@ -20,3 +20,11 @@ export const PELAJARAN_UJI: Pelajaran = (() => {
   if (!hasil.ok) throw new Error(`snapshot materi tidak sah: ${hasil.galat}`);
   return hasil.isi;
 })();
+
+const teks = (isi: string) => [{ jenis: 'teks' as const, teks: isi }];
+/** Soal kuis lengkap (alasan tiap pilihan + pembahasan) untuk tes alur dua tahap. */
+export const soalKuisUji = (kode: string, tambahan: Partial<SoalKuis> = {}): SoalKuis => ({
+  kode, bab: 4, tingkat: 'dasar', pertanyaan: teks('Berapa bagian suami bila pewaris punya anak?'),
+  pilihan: [teks('1/2'), teks('1/4'), teks('1/8')], indeksBenar: 1, pembahasan: teks('Suami mendapat 1/4 karena ada far\'u waris.'),
+  alasanPilihan: [teks('1/2 bila tanpa anak.'), teks('Benar, ada anak.'), teks('1/8 bagian istri.')], ...tambahan,
+});

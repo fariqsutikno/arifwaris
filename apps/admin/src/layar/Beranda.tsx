@@ -2,7 +2,7 @@
 // (angka milik saya & antrean, lanjutkan pekerjaan, antrean tertua untuk reviewer), dan menampilkan tombol buat baru
 // untuk admin/penulis; admin melihat daftar lanjutkan & antrean sekaligus. Galat repo tampil sebagai Alert dengan tombol coba lagi.
 import { useEffect, useState, type ReactNode } from 'react';
-import { type JenisKonten, type Peran } from '@waris/content';
+import { type JenisKonten, type Peran, bisaMenulis } from '@waris/content';
 import type { RingkasanEntri } from '@waris/data';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -66,7 +66,7 @@ export function ChipStatus({ status }: { status: StatusTampil }) {
 // Penulis: lanjutkan pekerjaan + buat baru. Reviewer: antrean tertua. Admin (menulis sekaligus memeriksa): ketiganya.
 function IsiBeranda({ ringkasan, peran }: { ringkasan: RingkasanBeranda; peran: Peran }) {
   const sekarang = new Date();
-  const menulis = peran !== 'reviewer';
+  const menulis = bisaMenulis(peran);
   const memeriksa = peran !== 'penulis';
   return (
     <>

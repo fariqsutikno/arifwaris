@@ -126,3 +126,35 @@ describe('bolehAbaikanRevisi', () => {
     expect(bolehAbaikanRevisi({ ...dasarAbaikan, peran: 'penulis', status: 'diajukan' })).toBe(false);
   });
 });
+
+describe('transisi dua tahap soal kuis', () => {
+  const kuis = { duaTahap: true, pembuatId: 'p' } as const;
+  const penuh = [1, 2, 3, 4, 5];
+  test('periksa: reviewer/admin, checklist lengkap, bukan revisi sendiri', () => {
+    const p = { ...kuis, status: 'diajukan', aksi: 'periksa', peran: 'reviewer', pelakuId: 'r', butirDicentang: penuh } as const;
+    expect(transisiRevisi(p)).toEqual({ ok: true, status: 'diperiksa' });
+    expect(transisiRevisi({ ...p, butirDicentang: [1, 2, 3, 4] }).ok).toBe(false);
+    expect(transisiRevisi({ ...p, pelakuId: 'p' }).ok).toBe(false);
+    expect(transisiRevisi({ ...p, peran: 'keilmuan' }).ok).toBe(false);
+    expect(transisiRevisi({ ...p, peran: 'admin', pelakuId: 'p' }).ok).toBe(true);
+    expect(transisiRevisi({ ...p, duaTahap: false }).ok).toBe(false);
+  });
+  test('setujui soal kuis hanya dari diperiksa oleh keilmuan/admin', () => {
+    const p = { ...kuis, aksi: 'setujui', pelakuId: 'k' } as const;
+    expect(transisiRevisi({ ...p, status: 'diajukan', peran: 'admin' }).ok).toBe(false);
+    expect(transisiRevisi({ ...p, status: 'diperiksa', peran: 'reviewer' }).ok).toBe(false);
+    expect(transisiRevisi({ ...p, status: 'diperiksa', peran: 'keilmuan' })).toEqual({ ok: true, status: 'disetujui' });
+    expect(transisiRevisi({ ...p, status: 'diperiksa', peran: 'admin' }).ok).toBe(true);
+    expect(transisiRevisi({ status: 'diajukan', aksi: 'setujui', peran: 'keilmuan', pelakuId: 'k', pembuatId: 'p' }).ok).toBe(false);
+  });
+  test('kembalikan: keilmuan hanya dari diperiksa; terbitkan langsung ditolak', () => {
+    const p = { ...kuis, aksi: 'kembalikan', peran: 'keilmuan', pelakuId: 'k', catatan: 'x' } as const;
+    expect(transisiRevisi({ ...p, status: 'diajukan' }).ok).toBe(false);
+    expect(transisiRevisi({ ...p, status: 'diperiksa' })).toEqual({ ok: true, status: 'dikembalikan' });
+    expect(transisiRevisi({ ...p, status: 'diajukan', peran: 'reviewer', pelakuId: 'r' }).ok).toBe(true);
+    expect(transisiRevisi({ ...kuis, status: 'draf', aksi: 'terbitkan', peran: 'admin', pelakuId: 'a' }).ok).toBe(false);
+  });
+  test('keilmuan tidak menulis', () => {
+    expect(bolehSuntingDraf({ status: 'draf', peran: 'keilmuan', pelakuId: 'k', pembuatId: 'k' })).toBe(false);
+  });
+});

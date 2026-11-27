@@ -24,6 +24,7 @@ export function aksiPeran(peran: Peran, tab: TabStatus): AksiDaftar[] {
   if (tab === 'arsip') return ['keluarkanArsip'];
   if (peran === 'admin') return ['terbitkan', 'ajukan', 'setujui', 'kembalikan', 'arsipkan', 'sampah'];
   if (peran === 'penulis') return ['ajukan', 'arsipkan', 'sampah'];
+  if (peran === 'keilmuan') return ['setujui', 'kembalikan'];
   return ['setujui', 'kembalikan', 'arsipkan'];
 }
 
@@ -52,10 +53,15 @@ export function alasanTolak(aksi: AksiDaftar, entri: RingkasanEntri, pelaku: Pel
   if (!revisi || revisi.hapus) return KETERANGAN_STATUS[status];
   const transisi = transisiRevisi({
     peran: pelaku.peran, pelakuId: pelaku.userId, pembuatId: revisi.dibuatOleh, status: revisi.status, aksi, catatan: 'ada',
+    duaTahap: entri.jenis === 'soal_kuis',
   });
   if (transisi.ok) return null;
-  const statusCocok = (aksi === 'terbitkan' || aksi === 'ajukan') ? revisi.status === 'draf' : revisi.status === 'diajukan';
+  const statusCocok = (aksi === 'terbitkan' || aksi === 'ajukan') ? revisi.status === 'draf' : revisi.status === 'diajukan' || revisi.status === 'diperiksa';
   if (!statusCocok) return KETERANGAN_STATUS[status];
+  // Soal kuis: diperiksa reviewer di Antrean review (dengan checklist) sebelum keilmuan menyetujui.
+  if (entri.jenis === 'soal_kuis' && aksi === 'terbitkan') return 'soal kuis harus lewat dua tahap';
+  if (entri.jenis === 'soal_kuis' && revisi.status === 'diajukan' && aksi === 'setujui') return 'perlu diperiksa dulu';
+  if (revisi.status === 'diperiksa') return 'menunggu persetujuan keilmuan';
   return aksi === 'ajukan' ? 'draf milik orang lain' : 'revisi Anda sendiri';
 }
 

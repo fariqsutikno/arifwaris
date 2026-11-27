@@ -7,7 +7,8 @@
 // (editor/ajuanSaya.ts; penulis & admin). Kepala menampilkan judul halaman aktif.
 import { NAMA_APLIKASI } from '@waris/web/terjemah';
 import { useEffect, useState, type ReactNode } from 'react';
-import { transisiRevisi, type JenisKonten, type StatusRevisi } from '@waris/content';
+import { type JenisKonten, type StatusRevisi, bisaMenulis } from '@waris/content';
+import { adaYangBisaDilakukan } from './editor/soalKuisReview';
 import { House, Inbox, LogOut, Menu as IkonMenu, Send, Users, type LucideIcon } from 'lucide-react';
 import { bacaTerakhirDibuka, jumlahKabarBaru, susunAjuan } from './editor/ajuanSaya';
 import { Button } from '@/components/ui/button';
@@ -69,11 +70,11 @@ function judulHalaman(aktif: KunciAktif): string {
 function SisiPortal({ rute, jenisEntri, onKeluar }: { rute: Rute; jenisEntri: JenisKonten | null; onKeluar: () => void }) {
   const { repo, sesi, peran } = usePortal();
   const { setOpenMobile } = useSidebar();
-  const bolehPeriksa = (revisi: { dibuatOleh: string; status: StatusRevisi }) =>
-    transisiRevisi({ peran, pelakuId: sesi.userId, pembuatId: revisi.dibuatOleh, status: revisi.status, aksi: 'setujui' }).ok;
+  const bolehPeriksa = (revisi: { dibuatOleh: string; status: StatusRevisi; hapus?: boolean; jenis?: string }) =>
+    adaYangBisaDilakukan(peran, sesi.userId, revisi);
   const [jumlahAntrean, setJumlahAntrean] = useState(0);
   const [kabarBaru, setKabarBaru] = useState(0);
-  const menulis = peran !== 'reviewer';
+  const menulis = bisaMenulis(peran);
 
   useEffect(() => {
     let dibatalkan = false;

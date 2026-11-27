@@ -19,8 +19,9 @@ export {
 } from './skema.js';
 export { tulisBlok, tulisPelajaran, tulisPotongan } from './tulisBlok.js';
 export { ambilRefs, periksaKonsistensi, type BarisKonten } from './konsistensi.js';
+export { BUTIR_CEKLIS_REVIEW, JUMLAH_BUTIR_CEKLIS, ceklisLengkap } from './ceklisReview.js';
 export {
-  transisiRevisi, bolehSuntingDraf, bolehPerbaruiAjuan, bolehAbaikanRevisi, caraBuangEntri, bolehPulihkanEntri, periksaRefs,
+  transisiRevisi, bisaMenulis, bolehSuntingDraf, bolehPerbaruiAjuan, bolehAbaikanRevisi, caraBuangEntri, bolehPulihkanEntri, periksaRefs,
   type Peran, type StatusRevisi, type AksiEditorial, type CaraBuangEntri, type KeadaanSampah,
 } from './editorial.js';
 export {
